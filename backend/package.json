@@ -1,0 +1,26 @@
+{
+  "name": "terapage-backend",
+  "version": "1.0.0",
+  "description": "A multi-vendor marketplace where vendors sell and customers shop, all in one platform.",
+  "license": "ISC",
+  "author": "Mohid Shahid",
+  "type": "commonjs",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.7.3",
+    "morgan": "^1.11.0",
+    "multer": "^2.2.0",
+    "nodemon": "^3.1.14"
+  }
+}
