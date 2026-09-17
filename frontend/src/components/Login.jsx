@@ -11,7 +11,7 @@ import { Checkbox } from "./ui/checkbox";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 
-const Login = () => {
+const Signup = () => {
   const [user , setUser] = useState({
     email : "",
     password : "",
@@ -97,4 +97,4 @@ const handleChange = (e) => {
   );
 };
 
-export default Login;
+export default Signup;
