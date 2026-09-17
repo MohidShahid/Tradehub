@@ -1,17 +1,30 @@
 const express = require("express");
+
+/**
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
+ */
+
+
 const cors = require("cors");
 const app = express();
 const morgan = require('morgan')
+const cookieParser = require("cookie-parser");
+const bodyParser = require("body-parser");
+const fileUpload = require("express-fileupload");
+const ErrorHandler = require('./middleware/error')
+const userRoutes = require("./routes/auth")
 
+
+app.use(express.json());
+app.use("/", express.static("uploads"))
+app.use(cookieParser());
+app.use(bodyParser.urlencoded({extended : true, limit : "50mb"}));
+app.use(fileUpload({useTempFiles : true}))
 app.use(morgan("dev"));
 
-app.get('/', (req, res)=>{
-    res.send('Hello World')
-})
+app.use("/api/v1/user", userRoutes);
 
+app.use(ErrorHandler);
 
-const PORT = 4000;
-
-app.listen(PORT, ()=>{
-    console.log("App is running on http://localhost:4000");
-})
+module.exports = app;
