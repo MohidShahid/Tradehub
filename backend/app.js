@@ -12,11 +12,17 @@ const morgan = require('morgan')
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const ErrorHandler = require('./middleware/error')
-const userRoutes = require("./routes/auth")
+const userRoutes = require("./routes/userRoutes")
 
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 
 app.use(express.json());
-app.use("/", express.static("uploads"))
+app.use("/", express.static("uploads"));
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended : true, limit : "50mb"}));
 

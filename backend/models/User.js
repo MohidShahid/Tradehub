@@ -16,15 +16,29 @@ const userSchema = Schema({
         type : String,
         default : null,
     },
-    isBuyer : {
-        type : Boolean,
+    profilePic : {
+        type : String,
+        default : null,
+    },
+    isEmailVerified : {
+        type : String,
         default : false,
     },
-    isSeller : {
-        type : Boolean,
-        default : false
+    token : {
+      type : "String",
+      default : null
     }
 })
+
+
+userSchema.pre("save", async function () {
+  if (!this.isModified("password")) {
+    return;
+  }
+
+  this.password = await bcrypt.hash(this.password, 10);
+});
+
 
 userSchema.methods.comparePassword = async function (password) {
     return await bcrypt.compare(password , this.password);

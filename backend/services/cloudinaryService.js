@@ -8,6 +8,16 @@ cloudinary.config({
 
 
 
+// cloudinary.api.ping()
+//   .then((result) => {
+//     console.log("Cloudinary connected:", result);
+//   })
+//   .catch((error) => {
+//     console.error("Cloudinary connection failed:");
+//     console.error("Message:", error.message);
+//     console.error("HTTP Code:", error.http_code);
+//   });
+
 /////////////////////////
 // Uploads an image file
 /////////////////////////
@@ -17,9 +27,12 @@ const uploadToCloudinary = (buffer) => {
     const stream = cloudinary.uploader.upload_stream(
       {
         folder: "tradehub",
+        resource_type: "image",
       },
       (error, result) => {
         if (error) {
+          console.log("full error:", error);
+
           reject(error);
         } else {
           resolve(result);
@@ -30,5 +43,4 @@ const uploadToCloudinary = (buffer) => {
     stream.end(buffer);
   });
 };
-
-module.exports = uploadToCloudinary;
+module.exports = {uploadToCloudinary};
