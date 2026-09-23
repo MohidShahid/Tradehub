@@ -2,7 +2,7 @@ const nodemailer = require("nodemailer");
 const ErrorHandler = require("../utils/ErrorHandler")
 // Create a transporter using SMTP
 const transporter = nodemailer.createTransport({
-  host: "gmail",
+  host: "smtp.gmail.com",
   port: 587,
   secure: false, // use STARTTLS (upgrade connection to TLS after connecting)
   auth: {

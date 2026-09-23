@@ -27,7 +27,7 @@ const userSchema = Schema({
     token : {
       type : "String",
       default : null
-    }
+    },
 })
 
 
