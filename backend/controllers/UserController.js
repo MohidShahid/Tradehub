@@ -72,7 +72,7 @@ const accountActivation = async (req, res, next) => {
 
 const loginUser = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
+    const { email, password , rememberMe} = req.body;
     const user = await User.findOne({ email });
     if (!user) {
       return next(new ErrorHandler("Invalid email or password", 401));
@@ -87,8 +87,9 @@ const loginUser = async (req, res, next) => {
       userId: user._id,
       email: user.email,
     };
+    const expireAt = rememberMe ? "7d" : "1d"
     const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, {
-      expiresIn: "7d",
+      expiresIn: expireAt,
     });
 
     res.cookie("token", token, {
@@ -96,6 +97,8 @@ const loginUser = async (req, res, next) => {
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
     });
+
+    return res.json({success : true, message : "Logged in successfully"})
   } catch (error) {
     console.log(error);
     return next(new ErrorHandler("Internal Server Error", 500));
@@ -104,8 +107,10 @@ const loginUser = async (req, res, next) => {
 
 
 const getCurrentUser = async (req, res, next)=> {
- const user = User.findById({_id : req.user.userId}).populate("fullName email profilePic");
 
- return res.json({success : true, data : user})
+ const user = await User.findById({_id : req.user.userId});
+
+
+ return res.json({success : true, data : user});
 }
 module.exports = { createUser, accountActivation, loginUser, getCurrentUser };
