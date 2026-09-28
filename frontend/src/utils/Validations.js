@@ -1,32 +1,52 @@
-export const validateSignup = (formData) => {
+export const validateSignup = (user) => {
   const errors = {};
 
-  if (!formData.fullName.trim()) {
+  if (!user.fullName.trim()) {
     errors.fullName = "Full name is required";
   }
 
-  if (!formData.email.trim()) {
+  if (!user.email.trim()) {
     errors.email = "Email is required";
-  } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+  } else if (!/\S+@\S+\.\S+/.test(user.email)) {
     errors.email = "Enter a valid email address";
   }
 
-  if (!formData.password) {
+  if (!user.password) {
     errors.password = "Password is required";
-  } else if (formData.password.length < 8) {
+  } else if (user.password.length < 8) {
     errors.password = "Password must be at least 8 characters";
   }
 
-  if (formData.password !== formData.confirmPassword) {
+  if (user.password !== user.confirmPassword) {
     errors.confirmPassword = "Passwords do not match";
   }
 
-  if (!formData.termsAndPrivacyAccepted) {
+  if (!user.termsAndPrivacyAccepted) {
     errors.termsAndPrivacyAccepted =
       "You must accept the terms and privacy policy";
   }
 
   return errors;
 };
+
+
+export const validateLogin = (user)=>{
+  const errors = {};
+
+  if (!user.email.trim()) {
+    errors.email = "Email is required";
+  } else if (!/\S+@\S+\.\S+/.test(user.email)) {
+    errors.email = "Enter a valid email address";
+  }
+
+  if (!user.password) {
+    errors.password = "Password is required";
+  } else if (user.password.length < 8) {
+    errors.password = "Password must be at least 8 characters";
+  }
+
+  return errors;
+
+}
 
 

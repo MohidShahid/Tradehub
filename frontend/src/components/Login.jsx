@@ -1,6 +1,6 @@
 import { Input } from "./ui/input";
 import { Button } from "@/components/ui/button";
-import { Field, FieldLabel } from "./ui/field";
+import { Field, FieldLabel, FieldError } from "./ui/field";
 import {
   InputGroup,
   InputGroupAddon,
@@ -10,8 +10,13 @@ import { EyeOffIcon, EyeIcon } from "lucide-react";
 import { Checkbox } from "./ui/checkbox";
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import { loginUser } from "@/services/accountService";
+import { toast } from "./ui/toast";
+import { validateLogin } from "@/utils/Validations";
+import { Spinner } from "./ui/spinner";
+import { useNavigate } from "react-router-dom";
 
-const Signup = () => {
+const Login = () => {
   const [user , setUser] = useState({
     email : "",
     password : "",
@@ -19,6 +24,9 @@ const Signup = () => {
   })
 
   const [type, setType] = useState("password");
+  const [errors , setErrors] = useState({});
+  const [loading , setLoading] = useState(false);
+  const navigate = useNavigate();
 
 const handleChange = (e) => {
   const { name, value, type, checked } = e.target;
@@ -27,11 +35,29 @@ const handleChange = (e) => {
     ...prevUser,
     [name]: type === "checkbox" ? checked : value,
   }));
-  console.log(e.target.checked)
+
 };
 
-  const handleSubmit = ()=>{
-    console.log(user);
+  const handleSubmit = async()=>{
+      try {
+        const errors = validateLogin(user);
+        setErrors(errors);
+        setLoading(true)
+        const response = await loginUser(user);
+        toast.add({
+          type : "success",
+          description : response?.data?.message
+        })
+        setLoading(false);
+        navigate("/")
+      } catch (error) {
+        console.log(error.response)
+        toast.add({
+          type : "error",
+          description : error.response.data.message,
+        })
+        setLoading(false);
+      }
   }
   return (
     <div className="flex items-center justify-center h-dvh">
@@ -51,7 +77,7 @@ const handleChange = (e) => {
             className={"p-5"}
             onChange={(e)=> handleChange(e)}
           />
-          {/* <FieldError>Enter a valid email address.</FieldError> */}
+          {errors.email && (<FieldError>{errors.email}</FieldError>)}
         </Field>
 
         <Field className={"pt-3"}>
@@ -72,6 +98,7 @@ const handleChange = (e) => {
               
             </InputGroupAddon>
           </InputGroup>
+          {errors.password && (<FieldError>{errors.password}</FieldError>)}
         </Field>
         <div className="flex justify-between pb-5">
           <Field orientation="horizontal">
@@ -90,11 +117,11 @@ const handleChange = (e) => {
           </Link>
         </div>
 
-        <Button className={"py-6 bg-(--color-accent) text-xl cursor-pointer"} onClick={()=> handleSubmit()}>Login</Button>
+        <Button className={"py-6 bg-(--color-accent) text-xl cursor-pointer"} onClick={()=> handleSubmit()} disabled={loading}>{loading && <Spinner />}Login</Button>
         <div className="text-center text-sm">Don't have an account? <Link className="text-sm! text-(--color-accent)" to={"/Signup"}>Sign up</Link></div>
       </div>
     </div>
   );
 };
 
-export default Signup;
+export default Login;

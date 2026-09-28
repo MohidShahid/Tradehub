@@ -17,7 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { validateSignup } from "@/utils/Validations";
 
 
-const Login = () => {
+const Signup = () => {
   const [user, setUser] = useState({
     fullName: "",
     email: "",
@@ -246,4 +246,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Signup;

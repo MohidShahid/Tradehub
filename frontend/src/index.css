@@ -7,30 +7,32 @@
 
 :root {
   /* Primary Colors */
-  --color-primary: #14532D;          /* Dark Forest Green */
-  --color-primary-hover: #166534;    /* Medium Green */
-  --color-accent: #F97316;           /* Vibrant Orange */
-  --color-accent-hover: #EA580C;     /* Bright Orange */
+  --color-primary: #14532d; /* Dark Forest Green */
+  --color-primary-hover: #166534; /* Medium Green */
+  --color-primary-light: #dcfce7; /* Soft Light Green */
+  --color-primary-light-hover: #bbf7d0;
+  --color-accent: #f97316; /* Vibrant Orange */
+  --color-accent-hover: #ea580c; /* Bright Orange */
 
   /* Backgrounds */
-  --color-bg: #FFFFFF;               /* Main background */
-  --color-bg-secondary: #F8FAFC;     /* Cards & sections */
-  --color-bg-tertiary: #F1F5F9;      /* Subtle backgrounds */
+  --color-bg: #ffffff; /* Main background */
+  --color-bg-secondary: #f8fafc; /* Cards & sections */
+  --color-bg-tertiary: #f1f5f9; /* Subtle backgrounds */
 
   /* Text */
-  --color-text: #0F172A;             /* Main text */
-  --color-text-secondary: #64748B;   /* Secondary text */
-  --color-text-muted: #94A3B8;       /* Placeholder / muted */
+  --color-text: #0f172a; /* Main text */
+  --color-text-secondary: #64748b; /* Secondary text */
+  --color-text-muted: #94a3b8; /* Placeholder / muted */
 
   /* Borders */
-  --color-border: #E2E8F0;
-  --color-border-dark: #CBD5E1;
+  --color-border: #e2e8f0;
+  --color-border-dark: #cbd5e1;
 
   /* Semantic Colors */
-  --color-success: #16A34A;
-  --color-danger: #EF4444;
-  --color-warning: #F59E0B;
-  --color-star: #FBBF24;
+  --color-success: #16a34a;
+  --color-danger: #ef4444;
+  --color-warning: #f59e0b;
+  --color-star: #fbbf24;
 
   /* Shadows (optional) */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
@@ -71,7 +73,7 @@
 
 @theme inline {
   --font-heading: var(--font-sans);
-  --font-sans: 'Geist Variable', sans-serif;
+  --font-sans: "Geist Variable", sans-serif;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
