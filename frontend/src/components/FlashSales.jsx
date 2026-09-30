@@ -30,7 +30,7 @@ const FlashSales = () => {
     <div className="px-10 py-10 bg-(--color-primary-light)">
       <div className="flex flex-col gap-3">
         <div className="flex gap-2.5 items-center">
-          <Zap className="text-white p-2 rounded-full bg-(--color-accent) " size={50} />{" "}
+          <Zap className="text-white p-2 rounded-full bg-(--color-accent) " fill="currentColor" size={50} />{" "}
           <h1 className="text-3xl font-bold text-(--color-primary) ">
             Flash <span className="text-(--color-accent)">Sales</span>
           </h1>
@@ -51,9 +51,9 @@ const FlashSales = () => {
       </div>
       <div className="flex flex-wrap items-center gap-7 ">
       {
-        products.map((product)=>{
+        products.map((product, i)=>{
             return(
-             <ProductCard product={product} />
+             <ProductCard product={product} key={i} />
             )
         })
       }

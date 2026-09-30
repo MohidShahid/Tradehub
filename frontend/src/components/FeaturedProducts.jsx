@@ -14,9 +14,9 @@ const FeaturedProducts = () => {
       </div>
        <div className="flex items-center flex-wrap gap-3 pt-8">
         {
-            products.map((product)=>{
+            products.map((product, i)=>{
                 return (
-                    <ProductCard product={product} />
+                    <ProductCard product={product} key={i} />
                 )
             })
         }

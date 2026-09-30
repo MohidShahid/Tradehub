@@ -1,18 +1,18 @@
-import Navbar from "@/components/Navbar";
+
 import HeroSection from "@/components/HeroSection";
 import Categories from "@/components/Categories";
 import FlashSales from "@/components/FlashSales";
-import Footer from "@/components/Footer";
+
 import FeaturedProducts from "@/components/FeaturedProducts";
+import WhyChooseUs from "@/components/WhyChooseUs";
 const HomePage = () => {
   return (
     <div>
-      <Navbar />
       <HeroSection />
       <Categories />
       <FlashSales />
       <FeaturedProducts />
-      <Footer />
+      <WhyChooseUs />
     </div>
   )
 }
