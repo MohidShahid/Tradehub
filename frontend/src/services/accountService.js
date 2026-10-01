@@ -19,5 +19,13 @@ const getUser = async()=>{
    return await axioss.get(`${API_URL}/v1/user/me`);
 }
 
+const registerSeller = async(data)=>{
+  return await axioss.post(`${API_URL}/v1/user/create-seller`, data);
+}
 
-export {registerAccount, accountActivation, loginUser, getUser};
+const Logout = async()=>{
+  return await axioss.post(`${API_URL}/v1/user/logout`);
+}
+
+
+export {registerAccount, accountActivation, loginUser, getUser, registerSeller, Logout};

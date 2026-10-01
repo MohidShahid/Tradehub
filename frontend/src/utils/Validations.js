@@ -1,4 +1,4 @@
-export const validateSignup = (user) => {
+export const validateBuyer = (user) => {
   const errors = {};
 
   if (!user.fullName.trim()) {
@@ -48,5 +48,35 @@ export const validateLogin = (user)=>{
   return errors;
 
 }
+
+
+
+export const validateVendor = (vendor)=>{
+  const errors = {};
+
+    if (!vendor.fullName.trim()) {
+    errors.fullName = "Full name is required";
+  }
+
+  if (!vendor.email.trim()) {
+    errors.email = "Email is required";
+  } else if (!/\S+@\S+\.\S+/.test(vendor.email)) {
+    errors.email = "Enter a valid email address";
+  }
+
+  if (!vendor.password) {
+    errors.password = "Password is required";
+  } else if (vendor.password.length < 8) {
+    errors.password = "Password must be at least 8 characters";
+  }
+   
+  if (!vendor.shopName.trim()) {
+    errors.fullName = "Full name is required";
+  }
+    return errors;
+
+}
+
+
 
 

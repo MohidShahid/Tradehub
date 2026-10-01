@@ -39,8 +39,8 @@ const FlashSales = () => {
         <div className="flex items-center gap-5 py-10">
           {Object.keys(countDownTime).map((i) => {
             return (
-              <div className="border border-(--color-bg-secondary) bg-white p-3 rounded-xl flex items-center justify-center flex-col ">
-                <h3 className="text-2xl font-bold text-(--color-primary)">
+              <div className="border border-(--color-bg-secondary) bg-white p-3 rounded-xl flex items-center justify-center flex-col" key={i}>
+                <h3 className="text-2xl font-bold text-(--color-primary)" >
                   {countDownTime[i]}
                 </h3>
                 <p className="text-sm text-(--color-text-secondary)">{i}</p>

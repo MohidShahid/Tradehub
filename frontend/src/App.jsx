@@ -5,7 +5,6 @@ import {
   SignupPage,
   HomePage,
   AccountActivation,
-  CreateVendorAccount,
   UserProfile,
 } from "./Routes";
 import "./App.css";
@@ -18,6 +17,8 @@ import {
 } from "./lib/features/userSlice";
 import { useDispatch } from "react-redux";
 import MainLayout from "./Layouts/MainLayout";
+import CartPage from "./pages/CartPage";
+import WishlistPage from "./pages/WishlistPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -30,7 +31,9 @@ function App() {
       })
       .catch((err) => {
         console.log(err.response);
-        dispatch(LoadUserFail(err.response.message));
+        dispatch(
+          LoadUserFail(err.response?.data?.message || "Failed to load user"),
+        );
       });
   }, []);
 
@@ -40,15 +43,17 @@ function App() {
         <Routes>
           <Route element={<MainLayout />}>
             <Route path="/" element={<HomePage />} />
-            <Route path="/profile" element={<UserProfile />} />
+            <Route path="/cart" element={<CartPage />} />
+            <Route path="/wishlist" element={<WishlistPage />} />
+            <Route path="/user-profile" element={<UserProfile />} />
           </Route>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
+
           <Route
             path="/account-activation/:token"
             element={<AccountActivation />}
           />
-          <Route path="/create-seller" element={<CreateVendorAccount />} />
         </Routes>
       </BrowserRouter>
     </>

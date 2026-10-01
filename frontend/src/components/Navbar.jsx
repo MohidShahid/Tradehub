@@ -1,7 +1,7 @@
 import Logo from "../assets/whitelogo1.png";
 import SearchBar from "./SearchBar";
 import { useState, useEffect, useRef } from "react";
-import { HeartIcon, Store, ShoppingCart } from "lucide-react";
+import { HeartIcon, ShoppingCart } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import {
@@ -21,11 +21,33 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Logout } from "@/services/accountService";
+import { toast } from "./ui/toast";
 
 const Navbar = () => {
   const state = useSelector((state) => state.user);
+
   const [removeRounded, setRemoveRounded] = useState(false);
   const inputRef = useRef(null);
+
+  const logout = async () => {
+    try {
+      const response = await Logout();
+      toast.add({
+        type: "success",
+        description: response?.data.message,
+      });
+    } catch (error) {
+      console.log("Backend error:", error.response);
+      toast.add({
+        type: "error",
+        description:
+          error.response?.data?.message ||
+          error.message ||
+          "Registration failed",
+      });
+    }
+  };
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -42,7 +64,7 @@ const Navbar = () => {
   }, []);
 
   return (
-    <div className="h-24 bg-(--color-primary-hover) px-5 py-5 flex items-center justify-between">
+    <div className="h-24 bg-(--color-primary-hover) px-5 py-5 flex items-center justify-between sticky top-0 z-40">
       <div className="flex items-center gap-2">
         <img src={Logo} alt="" width={50} height={50} />
         <div>
@@ -63,7 +85,7 @@ const Navbar = () => {
       <div className="flex items-center justify-between text-sm gap-6 cursor-pointer">
         <HeartIcon color="#fff" />
         <ShoppingCart color="#fff" />
-        {!state.isAuthenticated && !state.user && (
+        {/* {!state.isAuthenticated && !state.user && (
           <Link
             className="flex items-center gap-2.5 text-white"
             to={"/create-seller"}
@@ -71,7 +93,7 @@ const Navbar = () => {
             <Store />
             <p>Become Seller</p>
           </Link>
-        )}
+        )} */}
 
         {state.isAuthenticated && state.user ? (
           <DropdownMenu>
@@ -79,8 +101,11 @@ const Navbar = () => {
               render={
                 <Button variant="ghost" size="icon" className="rounded-full">
                   <Avatar>
-                    <AvatarImage src={state.user.profilePic} alt="shadcn" />
-                    <AvatarFallback>LR</AvatarFallback>
+                    {state.user.profilePic ? (
+                      <AvatarImage src={state.user.profilePic} alt="shadcn" />
+                    ) : (
+                      <AvatarFallback>LR</AvatarFallback>
+                    )}
                   </Avatar>
                 </Button>
               }
@@ -89,7 +114,7 @@ const Navbar = () => {
               <DropdownMenuGroup>
                 <DropdownMenuItem>
                   <BadgeCheckIcon />
-                  Account
+                  <Link to={"/user-profile"}>Profile</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                   <CreditCardIcon />
@@ -101,7 +126,12 @@ const Navbar = () => {
                 </DropdownMenuItem>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {
+                  console.log("Sign out clicked");
+                  logout();
+                }}
+              >
                 <LogOutIcon />
                 Sign Out
               </DropdownMenuItem>
