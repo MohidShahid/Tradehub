@@ -4,11 +4,14 @@ import { useState, useEffect, useRef } from "react";
 import { HeartIcon, ShoppingCart } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import {
   BadgeCheckIcon,
   BellIcon,
   CreditCardIcon,
   LogOutIcon,
+  StoreIcon,
+  Store
 } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -23,12 +26,19 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Logout } from "@/services/accountService";
 import { toast } from "./ui/toast";
+import { authenticateSeller } from "@/services/accountService";
 
 const Navbar = () => {
   const state = useSelector((state) => state.user);
-
+  const cartItems = useSelector((state)=> state.cart.Items)
+  console.log(cartItems)
   const [removeRounded, setRemoveRounded] = useState(false);
   const inputRef = useRef(null);
+  const navigate = useNavigate();
+  const cartCount = cartItems.reduce(
+  (total, item) => total + item.quantity,
+  0
+);
 
   const logout = async () => {
     try {
@@ -63,6 +73,22 @@ const Navbar = () => {
     };
   }, []);
 
+  const BecomeSeller = async ()=>{
+    try {
+      const response = await authenticateSeller();
+      console.log(response.data);
+      navigate("/seller-info")
+
+    } catch (error) {
+      toast.add({
+        type : "error",
+        description : error.response?.data?.message ||
+          error.message,
+      })
+      navigate("/signup")
+    }
+  }
+
   return (
     <div className="h-24 bg-(--color-primary-hover) px-5 py-5 flex items-center justify-between sticky top-0 z-40">
       <div className="flex items-center gap-2">
@@ -82,18 +108,28 @@ const Navbar = () => {
         setRemoveRounded={setRemoveRounded}
         inputRef={inputRef}
       />
-      <div className="flex items-center justify-between text-sm gap-6 cursor-pointer">
-        <HeartIcon color="#fff" />
-        <ShoppingCart color="#fff" />
-        {/* {!state.isAuthenticated && !state.user && (
+      <div className="flex items-center justify-between text-sm gap-6 ">
+        <Link to="/wishlist" className="cursor-pointer hover">
+          <HeartIcon color="#fff" />
+        </Link>
+<Link to="/cart" className="relative cursor-pointer">
+  <ShoppingCart color="#fff" size={24} />
+
+  {cartItems.length > 0 && (
+    <span className="absolute -right-2 -top-2 flex h-5 min-w-5 items-center justify-center rounded-full bg-orange-500 px-1 text-xs font-bold text-white">
+      {cartItems.length}
+    </span>
+  )}
+</Link>
+        {state.isAuthenticated && (
           <Link
             className="flex items-center gap-2.5 text-white"
-            to={"/create-seller"}
+            onClick={BecomeSeller}
           >
             <Store />
             <p>Become Seller</p>
           </Link>
-        )} */}
+         )}  
 
         {state.isAuthenticated && state.user ? (
           <DropdownMenu>
@@ -110,7 +146,7 @@ const Navbar = () => {
                 </Button>
               }
             />
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end" className={"w-52"}>
               <DropdownMenuGroup>
                 <DropdownMenuItem>
                   <BadgeCheckIcon />
@@ -122,7 +158,11 @@ const Navbar = () => {
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                   <BellIcon />
-                  Notifications
+                  <Link to={""}>Notifications</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <StoreIcon />
+                  <Link to={"/seller"}>Seller Dashboard</Link>
                 </DropdownMenuItem>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />

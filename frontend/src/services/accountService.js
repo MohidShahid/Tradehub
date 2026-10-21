@@ -27,5 +27,21 @@ const Logout = async()=>{
   return await axioss.post(`${API_URL}/v1/user/logout`);
 }
 
+const updateUserProfile = async (data) => {
+  return await axioss.patch(`${API_URL}/v1/user/update-profile`, data);
+};
 
-export {registerAccount, accountActivation, loginUser, getUser, registerSeller, Logout};
+const authenticateSeller = async ()=>{
+  return await axioss.get(`${API_URL}/v1/seller/authenticate`);
+}
+
+export {
+  registerAccount,
+  accountActivation,
+  loginUser,
+  getUser,
+  registerSeller,
+  Logout,
+  updateUserProfile,
+  authenticateSeller
+};

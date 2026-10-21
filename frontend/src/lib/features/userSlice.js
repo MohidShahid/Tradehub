@@ -23,6 +23,10 @@ export const userSlice = createSlice({
         state.error = action.payload
         state.loading = false;
       },
+      updateUserSuccess : (state, action) => {
+        state.loading = false;
+        state.user = action.payload;
+      },
       cleanErrors : (state)=>{
         state.error = null;
       }
@@ -30,6 +34,6 @@ export const userSlice = createSlice({
 
 })
 
-export const {LoadUserRequest, LoadUserSuccess, LoadUserFail} = userSlice.actions;
+export const {LoadUserRequest, LoadUserSuccess, LoadUserFail, updateUserSuccess, cleanErrors} = userSlice.actions;
 
 export default userSlice.reducer;

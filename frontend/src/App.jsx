@@ -1,5 +1,5 @@
 // import { useState } from 'react'
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import {
   LoginPage,
   SignupPage,
@@ -15,31 +15,49 @@ import {
   LoadUserRequest,
   LoadUserFail,
 } from "./lib/features/userSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import MainLayout from "./Layouts/MainLayout";
 import CartPage from "./pages/CartPage";
 import WishlistPage from "./pages/WishlistPage";
+import SellerDashboard from "./pages/SellerDashboard";
+import SellerLayout from "./components/SellerDashboard/Layout";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import CreateProduct from "./pages/Vendor/CreateProduct";
+import AllProducts from "./pages/Vendor/AllProducts";
 
 function App() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   useEffect(() => {
     dispatch(LoadUserRequest());
     getUser()
       .then((response) => {
         console.log(response.data.data);
         dispatch(LoadUserSuccess(response?.data?.data));
+        navigate("/");
       })
       .catch((err) => {
         console.log(err.response);
         dispatch(
           LoadUserFail(err.response?.data?.message || "Failed to load user"),
         );
+        navigate("/login");
       });
   }, []);
-
-  return (
-    <>
-      <BrowserRouter>
+  const { loading } = useSelector((state) => state.user);
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <DotLottieReact
+          src="https://lottie.host/babc6f09-8853-4433-891c-9cf9d2b73d0a/hzqFGgEtDP.lottie"
+          loop
+          autoplay
+        />
+      </div>
+    );
+  } else {
+    return (
+      <>
         <Routes>
           <Route element={<MainLayout />}>
             <Route path="/" element={<HomePage />} />
@@ -54,10 +72,16 @@ function App() {
             path="/account-activation/:token"
             element={<AccountActivation />}
           />
+          {/* Seller Routes Layout  */}
+          <Route path="/seller" element={<SellerLayout />}>
+            <Route path="dashboard" element={<SellerDashboard />} />
+            <Route path="products/create" element={<CreateProduct />} />
+            <Route path="products" element={<AllProducts />} />
+          </Route>
         </Routes>
-      </BrowserRouter>
-    </>
-  );
+      </>
+    );
+  }
 }
 
 export default App;

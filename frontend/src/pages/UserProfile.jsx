@@ -1,4 +1,4 @@
-import { useState } from "react";
+import {  useState } from "react";
 import { useSelector } from "react-redux";
 import {
   SidebarProvider,
@@ -24,21 +24,26 @@ import {
   Shield,
   CreditCard,
   Bell,
+  MessageSquareIcon,
 } from "lucide-react";
+import ProfileContent from "../components/UserProfile/ProfileContent"
 
 const navItems = [
   { id: "profile", label: "Profile Details", icon: User },
   { id: "orders", label: "My Orders", icon: ShoppingBag },
   { id: "addresses", label: "Addresses", icon: MapPin },
+  { id: "inbox", label: "Inbox", icon: MessageSquareIcon },
   { id: "payments", label: "Payment Methods", icon: CreditCard },
   { id: "security", label: "Password & Security", icon: Shield },
   { id: "notifications", label: "Notifications", icon: Bell },
 ];
 
 const UserProfileContent = () => {
+
   const [activeSection, setActiveSection] = useState("profile");
   const { user } = useSelector((state) => state.user);
   const { isMobile, setOpenMobile } = useSidebar();
+
 
   const handleSelectSection = (id) => {
     setActiveSection(id);
@@ -46,8 +51,6 @@ const UserProfileContent = () => {
       setOpenMobile(false);
     }
   };
-
-  const activeTitle = navItems.find((item) => item.id === activeSection)?.label;
 
   return (
     <div className="flex w-full min-h-[calc(100vh-6rem)] relative">
@@ -104,7 +107,7 @@ const UserProfileContent = () => {
                         tooltip={item.label}
                         size="lg"
                         onClick={() => handleSelectSection(item.id)}
-                        className={`w-full flex items-center gap-3.5 px-4 py-3 text-[15px] font-medium rounded-xl transition-all cursor-pointer ${
+                        className={`w-full flex items-center gap-3.5 px-4 py-3 text-[15px] font-medium  transition-all cursor-pointer ${
                           isActive
                             ? "bg-slate-900 text-white shadow-sm hover:bg-slate-900 hover:text-white"
                             : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
@@ -133,40 +136,15 @@ const UserProfileContent = () => {
         {/* Mobile-only menu toggle (on desktop, trigger is on the sidebar) */}
         <div className="md:hidden flex items-center gap-3 px-6 pt-5 pb-2">
           <SidebarTrigger className="cursor-pointer hover:bg-slate-100 border rounded-lg p-2 text-slate-700 h-9 w-9" />
-          <span className="text-sm font-semibold text-slate-700">Account Menu</span>
+          <span className="text-sm font-semibold text-slate-700">
+            Account Menu
+          </span>
         </div>
 
         {/* Section View */}
         <div className="p-6 md:p-10 flex-1">
           {activeSection === "profile" && (
-            <div className="max-w-2xl space-y-6">
-              <div>
-                <h2 className="text-2xl font-bold text-slate-800">
-                  Profile Details
-                </h2>
-                <p className="text-sm text-slate-500">
-                  Manage your personal information and contact details.
-                </p>
-              </div>
-              <div className="border rounded-xl p-5 bg-white space-y-4 shadow-xs">
-                <div>
-                  <label className="text-xs font-semibold text-slate-500 uppercase">
-                    Full Name
-                  </label>
-                  <p className="text-base text-slate-800 font-medium">
-                    {user?.fullName || "Not provided"}
-                  </p>
-                </div>
-                <div>
-                  <label className="text-xs font-semibold text-slate-500 uppercase">
-                    Email Address
-                  </label>
-                  <p className="text-base text-slate-800 font-medium">
-                    {user?.email || "Not provided"}
-                  </p>
-                </div>
-              </div>
-            </div>
+             <ProfileContent />
           )}
 
           {activeSection === "orders" && (

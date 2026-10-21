@@ -1,10 +1,22 @@
 import { Heart, Star, ShoppingCart } from "lucide-react";
 import { Button } from "./ui/button";
+import { addItemsCart } from "@/lib/features/cartSlice";
+import {
+  addInWhishlist,
+  removeFromWhishlist,
+} from "@/lib/features/wishlistSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const ProductCard = ({ product }) => {
+  const wishlist = useSelector((state) => state.wishlist.wishlist);
+  const cartItems = useSelector((state) => state.cart.Items);
+
+  const dispatch = useDispatch();
+  const isInWishlist = wishlist.some((item) => item.id === product.id);
+  const isInCartItems = cartItems.some((item)=> item.id === product.id)
+
   return (
     <div className="w-64 overflow-hidden rounded-2xl border border-gray-200 bg-white p-3 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
-      
       {/* Product Image */}
       <div className="relative flex h-48 items-center justify-center rounded-xl bg-gray-50">
         <img
@@ -16,17 +28,27 @@ const ProductCard = ({ product }) => {
         {/* Wishlist */}
         <button
           className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-sm hover:bg-gray-100 cursor-pointer"
+          onClick={() =>
+            dispatch(
+              isInWishlist
+                ? removeFromWhishlist(product.id)
+                : addInWhishlist(product),
+            )
+          }
         >
-          <Heart size={18} />
+          <Heart
+            size={18}
+            fill={isInWishlist ? "#f97316" : "none"}
+            color={isInWishlist ? "#f97316" : "currentColor"}
+          />
         </button>
       </div>
 
       {/* Product Information */}
       <div className="mt-3 space-y-2">
-
         {/* Product Name */}
         <h2 className="truncate text-base font-semibold text-gray-900">
-         {product.name}
+          {product.name}
         </h2>
 
         {/* Seller */}
@@ -38,11 +60,7 @@ const ProductCard = ({ product }) => {
         {/* Rating */}
         <div className="flex items-center gap-2 text-sm">
           <div className="flex items-center gap-0.5">
-            <Star
-              size={16}
-              className="text-yellow-400"
-              fill="currentColor"
-            />
+            <Star size={16} className="text-yellow-400" fill="currentColor" />
             <span className="font-medium text-gray-700">{product.rating}</span>
           </div>
 
@@ -64,12 +82,20 @@ const ProductCard = ({ product }) => {
           </span>
 
           <span className="text-xs font-semibold text-green-600">
-            {Math.floor(((product.oldPrice - product.price)/ product.oldPrice ) * 100)}% OFF
+            {Math.floor(
+              ((product.oldPrice - product.price) / product.oldPrice) * 100,
+            )}
+            % OFF
           </span>
         </div>
 
         {/* Add to Cart */}
-        <Button className="mt-1 w-full cursor-pointer bg-(--color-accent)">
+        <Button
+          className="mt-1 w-full cursor-pointer bg-(--color-accent)"
+          onClick={() => {
+            dispatch(addItemsCart(product));
+          }}
+        >
           <ShoppingCart size={17} />
           Add to Cart
         </Button>
