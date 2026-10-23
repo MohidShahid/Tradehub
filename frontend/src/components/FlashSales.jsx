@@ -10,7 +10,7 @@ const FlashSales = () => {
     Seconds: "",
   });
   setInterval(() => {
-    let CountDownDate = new Date("Oct 5, 2026 15:37:25").getTime();
+    let CountDownDate = new Date("Oct 25, 2026 15:37:25").getTime();
     let now = new Date().getTime();
     let distance = CountDownDate - now;
     var days = Math.floor(distance / (1000 * 60 * 60 * 24));

@@ -11,7 +11,7 @@ const products = [
     oldPrice: 850,
     discount: 18,
     image: ShoppingBags,
-    quantity : 20,
+    stock : 6,
   },
   {
     id: 2,
@@ -23,7 +23,7 @@ const products = [
     oldPrice: 299,
     discount: 17,
     image: ShoppingBags,
-    quantity : 20,
+    stock : 10,
   },
   {
     id: 3,
@@ -35,7 +35,7 @@ const products = [
     oldPrice: 399,
     discount: 20,
     image: ShoppingBags,
-    quantity : 20,
+    stock : 11,
   },
   {
     id: 4,
@@ -47,7 +47,7 @@ const products = [
     oldPrice: 399,
     discount: 13,
     image: ShoppingBags,
-    quantity : 20,
+    stock : 20,
   },
   {
     id: 5,
@@ -59,7 +59,7 @@ const products = [
     oldPrice: 220,
     discount: 18,
     image: ShoppingBags,
-    quantity : 20,
+    stock : 20,
   },
   {
     id: 6,
@@ -71,7 +71,7 @@ const products = [
     oldPrice: 119,
     discount: 17,
     image: ShoppingBags,
-    quantity : 20,
+    stock : 20,
   },
 ];
 

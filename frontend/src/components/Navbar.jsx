@@ -31,14 +31,15 @@ import { authenticateSeller } from "@/services/accountService";
 const Navbar = () => {
   const state = useSelector((state) => state.user);
   const cartItems = useSelector((state)=> state.cart.Items)
-  console.log(cartItems)
+  const wishlist = useSelector((state)=> state.wishlist.wishlist)
+
   const [removeRounded, setRemoveRounded] = useState(false);
   const inputRef = useRef(null);
   const navigate = useNavigate();
-  const cartCount = cartItems.reduce(
-  (total, item) => total + item.quantity,
-  0
-);
+//   const cartCount = cartItems.reduce(
+//   (total, item) => total + item.quantity,
+//   0
+// );
 
   const logout = async () => {
     try {
@@ -77,7 +78,7 @@ const Navbar = () => {
     try {
       const response = await authenticateSeller();
       console.log(response.data);
-      navigate("/seller-info")
+      navigate(`/shop/${response?.data?.data.owner}`);
 
     } catch (error) {
       toast.add({
@@ -109,8 +110,13 @@ const Navbar = () => {
         inputRef={inputRef}
       />
       <div className="flex items-center justify-between text-sm gap-6 ">
-        <Link to="/wishlist" className="cursor-pointer hover">
+        <Link to="/wishlist" className="relative cursor-pointer hover">
           <HeartIcon color="#fff" />
+            {wishlist.length > 0 && (
+    <span className="absolute -right-2 -top-2 flex h-5 min-w-5 items-center justify-center rounded-full bg-orange-500 px-1 text-xs font-bold text-white">
+      {wishlist.length}
+    </span>
+  )}
         </Link>
 <Link to="/cart" className="relative cursor-pointer">
   <ShoppingCart color="#fff" size={24} />
@@ -154,7 +160,7 @@ const Navbar = () => {
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                   <CreditCardIcon />
-                  Billing
+                  My Orders
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                   <BellIcon />

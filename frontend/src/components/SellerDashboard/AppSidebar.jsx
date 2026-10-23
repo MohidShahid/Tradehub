@@ -28,52 +28,52 @@ const navItems = [
   {
     name: "Dashboard",
     link: "/seller/dashboard",
-    icon: <SquareDashedKanbanIcon />,
+    icon: <SquareDashedKanbanIcon   />,
   },
   {
     name: "Create Product",
     link: "/seller/products/create",
-    icon: <PackagePlusIcon />,
+    icon: <PackagePlusIcon   />,
   },
   {
     name: "All Products",
     link: "/seller/products",
-    icon: <PackageIcon />,
+    icon: <PackageIcon   />,
   },
   {
     name: "Orders",
     link: "/seller/orders",
-    icon: <ShoppingCartIcon />,
+    icon: <ShoppingCartIcon   />,
   },
   {
     name: "Inbox",
     link: "/seller/inbox",
-    icon: <InboxIcon />,
+    icon: <InboxIcon   />,
   },
   {
     name: "Sales & Analytics",
     link: "/seller/analytics",
-    icon: <ChartNoAxesCombinedIcon />,
+    icon: <ChartNoAxesCombinedIcon   />,
   },
   {
     name: "Shop",
     link: "/seller/shop",
-    icon: <StoreIcon />,
+    icon: <StoreIcon   />,
   },
   {
     name: "Coupons",
     link: "/seller/discounts",
-    icon: <BadgePercentIcon />,
+    icon: <BadgePercentIcon   />,
   },
   {
     name: "Reviews",
     link: "/seller/reviews",
-    icon: <StarIcon />,
+    icon: <StarIcon   />,
   },
   {
     name: "Events",
     link: "/seller/events",
-    icon: <CalendarDaysIcon />,
+    icon: <CalendarDaysIcon   />,
   },
 ];
 export function AppSidebar() {
@@ -91,10 +91,10 @@ export function AppSidebar() {
         </div>
       </SidebarHeader>
 
-      <SidebarContent>
+      <SidebarContent className={"mt-5"}>
         <SidebarGroup>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="flex flex-col gap-7 [&_svg]:size-6">
               {navItems.map((item, i) => {
                 const isActive = location.pathname === item.link;
                 return (
@@ -103,8 +103,8 @@ export function AppSidebar() {
                       isActive={isActive}
                       render={<Link to={item.link} />}
                     >
-                      {item.icon}
-                      <span>{item.name}</span>
+                       {item.icon}
+                      <span className="text-xl">{item.name}</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 );

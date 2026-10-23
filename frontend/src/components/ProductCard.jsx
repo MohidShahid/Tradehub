@@ -1,22 +1,26 @@
 import { Heart, Star, ShoppingCart } from "lucide-react";
 import { Button } from "./ui/button";
-import { addItemsCart } from "@/lib/features/cartSlice";
 import {
   addInWhishlist,
   removeFromWhishlist,
 } from "@/lib/features/wishlistSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { PlusCircle, MinusCircle } from "lucide-react";
+import { addItemsCart, removeItemsCart } from "@/lib/features/cartSlice";
+import { useNavigate } from "react-router-dom";
 
 const ProductCard = ({ product }) => {
+  const navigate = useNavigate();
   const wishlist = useSelector((state) => state.wishlist.wishlist);
   const cartItems = useSelector((state) => state.cart.Items);
 
   const dispatch = useDispatch();
   const isInWishlist = wishlist.some((item) => item.id === product.id);
-  const isInCartItems = cartItems.some((item)=> item.id === product.id)
-
+  const isInCartItems = cartItems.some((item) => item.id === product.id);
+  const CartQuantity = cartItems.find((item) => item.id === product.id);
   return (
-    <div className="w-64 overflow-hidden rounded-2xl border border-gray-200 bg-white p-3 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
+    <div className="w-64 overflow-hidden rounded-2xl border border-gray-200 bg-white p-3 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg cursor-pointer"
+    onClick={()=> navigate(`/${product.name}/${product.id}`)}>
       {/* Product Image */}
       <div className="relative flex h-48 items-center justify-center rounded-xl bg-gray-50">
         <img
@@ -90,15 +94,21 @@ const ProductCard = ({ product }) => {
         </div>
 
         {/* Add to Cart */}
-        <Button
-          className="mt-1 w-full cursor-pointer bg-(--color-accent)"
-          onClick={() => {
-            dispatch(addItemsCart(product));
-          }}
-        >
-          <ShoppingCart size={17} />
-          Add to Cart
-        </Button>
+        {!isInCartItems && !product?.quantity > 0 ? (
+          <Button
+            className="mt-1 w-full cursor-pointer bg-(--color-accent)"
+            onClick={() => {
+              dispatch(addItemsCart(product));
+            }}
+          >
+            <ShoppingCart size={17} />
+            Add to Cart
+          </Button>
+        ) : (
+          <div className="w-full mt-1 rounded-3xl flex justify-evenly items-center bg-amber-600 text-white">
+           <PlusCircle onClick={()=> dispatch(addItemsCart(product))}/> <span>{CartQuantity.quantity}</span><MinusCircle onClick={()=> dispatch(removeItemsCart(product))}/>
+          </div>
+        )}
       </div>
     </div>
   );

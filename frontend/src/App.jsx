@@ -24,6 +24,8 @@ import SellerLayout from "./components/SellerDashboard/Layout";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import CreateProduct from "./pages/Vendor/CreateProduct";
 import AllProducts from "./pages/Vendor/AllProducts";
+import ProductDetails from "./pages/ProductDetails";
+import ShopInfoPage from "./pages/ShopInfoPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -32,7 +34,6 @@ function App() {
     dispatch(LoadUserRequest());
     getUser()
       .then((response) => {
-        console.log(response.data.data);
         dispatch(LoadUserSuccess(response?.data?.data));
         navigate("/");
       })
@@ -64,9 +65,11 @@ function App() {
             <Route path="/cart" element={<CartPage />} />
             <Route path="/wishlist" element={<WishlistPage />} />
             <Route path="/user-profile" element={<UserProfile />} />
+            <Route path="/:slug/:id" element={<ProductDetails />} />
           </Route>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
+          <Route path="/shop/:id" element={<ShopInfoPage />} />
 
           <Route
             path="/account-activation/:token"
