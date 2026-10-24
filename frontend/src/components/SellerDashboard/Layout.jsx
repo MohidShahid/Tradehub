@@ -7,7 +7,7 @@ export default function Layout({ children }) {
     <SidebarProvider>
       <AppSidebar />
       <main className="flex-1 w-full">
-        <SidebarTrigger />
+        <SidebarTrigger className={"size-6 p-8 h-10"} />
         {children ?? <Outlet />}
       </main>
     </SidebarProvider>

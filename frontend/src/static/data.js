@@ -75,4 +75,18 @@ const products = [
   },
 ];
 
-export  {products};
+
+const categories = [
+  { label: "Electronics", value: "electronics" },
+  { label: "Fashion & Clothing", value: "fashion-clothing" },
+  { label: "Home & Living", value: "home-living" },
+  { label: "Beauty & Personal Care", value: "beauty-personal-care" },
+  { label: "Sports & Outdoors", value: "sports-outdoors" },
+  { label: "Toys & Games", value: "toys-games" },
+  { label: "Automotive", value: "automotive" },
+  { label: "Books & Stationery", value: "books-stationery" },
+  { label: "Health & Wellness", value: "health-wellness" },
+  { label: "Food & Beverages", value: "food-beverages" },
+];
+
+export  {products, categories};

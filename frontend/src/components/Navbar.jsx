@@ -168,7 +168,7 @@ const Navbar = () => {
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                   <StoreIcon />
-                  <Link to={"/seller"}>Seller Dashboard</Link>
+                  <Link to={"/seller/dashboard"}>Seller Dashboard</Link>
                 </DropdownMenuItem>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
