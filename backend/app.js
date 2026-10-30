@@ -13,6 +13,8 @@ const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const ErrorHandler = require('./middleware/error')
 const userRoutes = require("./routes/userRoutes")
+const sellerRoutes = require("./routes/sellerRoutes")
+const productRoutes = require("./routes/productRoutes")
 
 app.use(
   cors({
@@ -29,6 +31,8 @@ app.use(bodyParser.urlencoded({extended : true, limit : "50mb"}));
 app.use(morgan("dev"));
 
 app.use("/api/v1/user", userRoutes);
+app.use("/api/v1/seller", sellerRoutes);
+app.use("/api/v1/product", productRoutes);
 
 app.use(ErrorHandler);
 
