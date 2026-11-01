@@ -8,9 +8,9 @@ import {
 } from "react-icons/fa";
 const Footer = () => {
   return (
-    <div className="bg-(--color-primary-hover) px-10 py-10 flex flex-col gap-10">
-      <div className="flex flex-wrap items-start justify-start gap-20">
-        <div className="flex items-center gap-3 px-5">
+    <div className="bg-(--color-primary-hover) md:px-10 px-5 py-10 flex flex-col gap-10">
+      <div className="flex flex-wrap items-start justify-start md:gap-36 gap-16">
+        <div className="flex items-center gap-3 ">
           <img src={Logo} alt="" width={50} height={50} />
           <div>
             <span className="flex font-bold text-[24px]">
@@ -22,7 +22,7 @@ const Footer = () => {
             </p>
           </div>
         </div>
-        <div className="flex flex-col gap-3 px-5">
+        <div className="flex flex-col gap-3 ">
           <h1 className="text-xl text-white font-bold">Quick Links</h1>
           <ul className="list-none text-white text-md ">
             <li>Home</li>
@@ -32,7 +32,7 @@ const Footer = () => {
             <li>Privacy Policy</li>
           </ul>
         </div>
-        <div className="flex flex-col gap-3 px-5">
+        <div className="flex flex-col gap-3 ">
           <h1 className="text-xl text-white font-bold">Customer Support</h1>
           <ul className="list-none text-white text-md ">
             <li>Contact Us</li>
@@ -41,7 +41,7 @@ const Footer = () => {
             <li>Returns and Refunds</li>
           </ul>
         </div>
-        <div className="flex flex-col gap-3 px-5">
+        <div className="flex flex-col gap-3 ">
           <h1 className="text-xl text-white font-bold">Follow Us</h1>
           <div className="flex gap-5 text-white">
             <FaFacebook />

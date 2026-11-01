@@ -1,4 +1,4 @@
-import Logo from "../assets/whitelogo1.png";
+import Logo1 from "../assets/logo.png";
 import SearchBar from "./SearchBar";
 import { useState, useEffect, useRef } from "react";
 import { HeartIcon, ShoppingCart } from "lucide-react";
@@ -11,7 +11,7 @@ import {
   CreditCardIcon,
   LogOutIcon,
   StoreIcon,
-  Store
+
 } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -27,19 +27,24 @@ import {
 import { Logout } from "@/services/accountService";
 import { toast } from "./ui/toast";
 import { authenticateSeller } from "@/services/accountService";
+import MobileNav from "./MobileNav";
+import {setShopDetails} from "../lib/features/shopSlice"
+import { useDispatch } from "react-redux";
+
 
 const Navbar = () => {
   const state = useSelector((state) => state.user);
-  const cartItems = useSelector((state)=> state.cart.Items)
-  const wishlist = useSelector((state)=> state.wishlist.wishlist)
+  const cartItems = useSelector((state) => state.cart.Items);
+  const wishlist = useSelector((state) => state.wishlist.wishlist);
 
   const [removeRounded, setRemoveRounded] = useState(false);
   const inputRef = useRef(null);
   const navigate = useNavigate();
-//   const cartCount = cartItems.reduce(
-//   (total, item) => total + item.quantity,
-//   0
-// );
+  const dispatch = useDispatch();
+  //   const cartCount = cartItems.reduce(
+  //   (total, item) => total + item.quantity,
+  //   0
+  // );
 
   const logout = async () => {
     try {
@@ -74,32 +79,30 @@ const Navbar = () => {
     };
   }, []);
 
-  const BecomeSeller = async ()=>{
+  const BecomeSeller = async () => {
     try {
       const response = await authenticateSeller();
-      console.log(response.data);
+      dispatch(setShopDetails(response?.data?.data))
       navigate(`/shop/${response?.data?.data.owner}`);
-
     } catch (error) {
       toast.add({
-        type : "error",
-        description : error.response?.data?.message ||
-          error.message,
-      })
-      navigate("/signup")
+        type: "error",
+        description: error.response?.data?.message || error.message,
+      });
+      navigate("/signup");
     }
-  }
+  };
 
   return (
-    <div className="h-24 bg-(--color-primary-hover) px-5 py-5 flex items-center justify-between sticky top-0 z-40">
+    <div className="h-24  px-5 py-5 flex items-center justify-between  top-0 z-40">
       <div className="flex items-center gap-2">
-        <img src={Logo} alt="" width={50} height={50} />
+        <img src={Logo1} alt="" width={50} height={50} />
         <div>
           <span className="flex font-bold text-[24px]">
-            <p className="text-white">Trade</p>
+            <p className="text-(--color-primary)">Trade</p>
             <p className="text-(--color-accent) ">Hub</p>
           </span>
-          <p className="text-[8px] text-(--color-text-muted)">
+          <p className="text-[8px] text-(--color-primary)">
             Multiple Sellers . One Marketplace
           </p>
         </div>
@@ -109,33 +112,33 @@ const Navbar = () => {
         setRemoveRounded={setRemoveRounded}
         inputRef={inputRef}
       />
-      <div className="flex items-center justify-between text-sm gap-6 ">
+      <div className="hidden items-center justify-between text-sm gap-6 md:flex">
         <Link to="/wishlist" className="relative cursor-pointer hover">
-          <HeartIcon color="#fff" />
-            {wishlist.length > 0 && (
-    <span className="absolute -right-2 -top-2 flex h-5 min-w-5 items-center justify-center rounded-full bg-orange-500 px-1 text-xs font-bold text-white">
-      {wishlist.length}
-    </span>
-  )}
+          <HeartIcon color="#14532d" />
+          {wishlist.length > 0 && (
+            <span className="absolute -right-2 -top-2 flex h-5 min-w-5 items-center justify-center rounded-full bg-orange-500 px-1 text-xs font-bold text-(--color-primary)">
+              {wishlist.length}
+            </span>
+          )}
         </Link>
-<Link to="/cart" className="relative cursor-pointer">
-  <ShoppingCart color="#fff" size={24} />
+        <Link to="/cart" className="relative cursor-pointer">
+          <ShoppingCart color="#14532d" size={24} />
 
-  {cartItems.length > 0 && (
-    <span className="absolute -right-2 -top-2 flex h-5 min-w-5 items-center justify-center rounded-full bg-orange-500 px-1 text-xs font-bold text-white">
-      {cartItems.length}
-    </span>
-  )}
-</Link>
+          {cartItems.length > 0 && (
+            <span className="absolute -right-2 -top-2 flex h-5 min-w-5 items-center justify-center rounded-full bg-orange-500 px-1 text-xs font-bold text-(--color-primary)">
+              {cartItems.length}
+            </span>
+          )}
+        </Link>
         {state.isAuthenticated && (
           <Link
-            className="flex items-center gap-2.5 text-white"
+            className="flex items-center gap-2.5 text-white bg-(--color-accent-hover) px-4 py-2 rounded-3xl"
             onClick={BecomeSeller}
           >
-            <Store />
+            {/* <Store size={22} /> */}
             <p>Become Seller</p>
           </Link>
-         )}  
+        )}
 
         {state.isAuthenticated && state.user ? (
           <DropdownMenu>
@@ -154,19 +157,19 @@ const Navbar = () => {
             />
             <DropdownMenuContent align="end" className={"w-52"}>
               <DropdownMenuGroup>
-                <DropdownMenuItem>
+                <DropdownMenuItem className={"cursor-pointer"}>
                   <BadgeCheckIcon />
                   <Link to={"/user-profile"}>Profile</Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
+                <DropdownMenuItem className={"cursor-pointer"}>
                   <CreditCardIcon />
                   My Orders
                 </DropdownMenuItem>
-                <DropdownMenuItem>
+                <DropdownMenuItem className={"cursor-pointer"}>
                   <BellIcon />
                   <Link to={""}>Notifications</Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
+                <DropdownMenuItem className={"cursor-pointer"}>
                   <StoreIcon />
                   <Link to={"/seller/dashboard"}>Seller Dashboard</Link>
                 </DropdownMenuItem>
@@ -174,7 +177,7 @@ const Navbar = () => {
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 onClick={() => {
-                  console.log("Sign out clicked");
+                  // console.log("Sign out clicked");
                   logout();
                 }}
               >
@@ -189,6 +192,7 @@ const Navbar = () => {
           </Link>
         )}
       </div>
+     <MobileNav />
     </div>
   );
 };

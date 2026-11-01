@@ -9,7 +9,7 @@ const SearchBar = ({removeRounded, setRemoveRounded, inputRef}) => {
   const [query, setQuery] = useState("");
 
   return (
-    <Field className={"w-[40%]"}>
+  <Field className={"w-[40%] md:flex hidden"}>
       <InputGroup className={`bg-white h-12 ${removeRounded ? "" : "rounded-full"} pl-2`} onClick={()=> setRemoveRounded(true)}>
         <InputGroupInput
         ref={inputRef}

@@ -1,10 +1,10 @@
 
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { CloudUpload, X, ImagePlus } from "lucide-react";
 
-const ProductImageUpload = () => {
+const ProductImageUpload = ({images , setImages}) => {
   const inputRef = useRef(null);
-  const [images, setImages] = useState([]);
+  
 
   const handleImages = (e) => {
     const files = Array.from(e.target.files || []);
