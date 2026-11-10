@@ -25,8 +25,8 @@ const WhyChooseUs = () => {
   ];
 
   return (
-    <section className="bg-(--color-primary-light) px-4 sm:px-6 md:px-10 py-8 md:py-10">
-      <div className="mx-auto flex max-w-7xl flex-col md:flex-row items-start md:items-center gap-8 md:gap-10">
+    <section className="w-full bg-(--color-primary-light) px-5 md:px-10 py-8 md:py-10">
+      <div className="w-full flex flex-col md:flex-row items-start md:items-center gap-8 md:gap-10">
         {/* Introduction */}
         <div className="w-full md:w-[28%] shrink-0">
           <h2 className="text-xl sm:text-2xl font-bold text-(--color-primary)">
@@ -45,13 +45,19 @@ const WhyChooseUs = () => {
             const Icon = benefit.icon;
 
             return (
-              <div key={benefit.title} className="flex items-start gap-3.5">
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white shadow-xs">
-                  <Icon size={22} className="text-(--color-primary)" />
+              <div
+                key={benefit.title}
+                className="group flex items-start gap-3.5 rounded-xl p-2 transition-colors duration-200 hover:bg-white/40"
+              >
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white shadow-xs transition-all duration-300 ease-out group-hover:scale-110 group-hover:shadow-md">
+                  <Icon
+                    size={22}
+                    className="text-(--color-primary) transition-transform duration-300 ease-out group-hover:rotate-6"
+                  />
                 </div>
 
                 <div>
-                  <h3 className="font-semibold text-sm md:text-base text-gray-900">
+                  <h3 className="font-semibold text-sm md:text-base text-gray-900 transition-colors duration-200 group-hover:text-(--color-primary)">
                     {benefit.title}
                   </h3>
 

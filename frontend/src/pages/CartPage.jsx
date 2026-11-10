@@ -24,6 +24,7 @@ import {
 import {
   addItemsCart,
   removeItemsCart,
+  deleteItemCart,
 } from "@/lib/features/cartSlice";
 
 import { Link } from "react-router-dom";
@@ -152,7 +153,7 @@ const CartPage = () => {
                           <button
                             type="button"
                             onClick={() =>
-                              dispatch(removeItemsCart(item))
+                              dispatch(deleteItemCart(item))
                             }
                             className="h-fit text-gray-400 transition hover:text-red-500"
                             title="Remove item"

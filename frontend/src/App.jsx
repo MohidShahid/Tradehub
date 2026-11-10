@@ -19,13 +19,14 @@ import { useDispatch, useSelector } from "react-redux";
 import MainLayout from "./Layouts/MainLayout";
 import CartPage from "./pages/CartPage";
 import WishlistPage from "./pages/WishlistPage";
-import SellerDashboard from "./pages/SellerDashboard";
+import SellerDashboard from "./pages/seller/SellerDashboard";
 import SellerLayout from "./components/SellerDashboard/Layout";
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
-import CreateProduct from "./pages/Vendor/CreateProduct";
-import AllProducts from "./pages/Vendor/AllProducts";
+import LoadingScreen from "./components/LoadingScreen";
+import CreateProduct from "./pages/seller/CreateProduct";
+import AllProducts from "./pages/seller/AllProducts";
 import ProductDetails from "./pages/ProductDetails";
 import ShopInfoPage from "./pages/ShopInfoPage";
+import Coupons from "./pages/seller/Coupons";
 
 function App() {
   const dispatch = useDispatch();
@@ -47,15 +48,7 @@ function App() {
   }, []);
   const { loading } = useSelector((state) => state.user);
   if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <DotLottieReact
-          src="https://lottie.host/babc6f09-8853-4433-891c-9cf9d2b73d0a/hzqFGgEtDP.lottie"
-          loop
-          autoplay
-        />
-      </div>
-    );
+    return <LoadingScreen message="Preparing your marketplace..." />;
   } else {
     return (
       <>
@@ -80,6 +73,7 @@ function App() {
             <Route path="dashboard" element={<SellerDashboard />} />
             <Route path="products/create" element={<CreateProduct />} />
             <Route path="products" element={<AllProducts />} />
+            <Route path="coupons" element={<Coupons />} />
           </Route>
         </Routes>
       </>

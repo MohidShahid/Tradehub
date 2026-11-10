@@ -62,7 +62,7 @@ const navItems = [
   },
   {
     name: "Coupons",
-    link: "/seller/discounts",
+    link: "/seller/coupons",
     icon: <BadgePercentIcon   />,
   },
   {

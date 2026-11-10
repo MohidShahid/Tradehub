@@ -5,6 +5,7 @@ import FlashSales from "@/components/FlashSales";
 
 import FeaturedProducts from "@/components/FeaturedProducts";
 import WhyChooseUs from "@/components/WhyChooseUs";
+
 const HomePage = () => {
   return (
     <div>

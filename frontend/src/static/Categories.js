@@ -1,76 +1,73 @@
-import {
-  Laptop,
-  Shirt,
-  Sofa,
-  Sparkles,
-  Dumbbell,
-  Gamepad2,
-  ShoppingBasket,
-  Car,
-  BookOpen,
-  MoreHorizontal,
-} from "lucide-react";
-
 const CategoryArray = [
   {
     name: "Electronics",
+    subtitle: "Laptops, Audio & Tech",
     link: "/category/electronics",
-    icon: Laptop,
-    color: "bg-blue-100 text-blue-600",
+    image:
+      "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&auto=format&fit=crop&q=80",
   },
   {
-    name: "Fashion",
+    name: "Fashion & Apparel",
+    subtitle: "Streetwear & Sneakers",
     link: "/category/fashion",
-    icon: Shirt,
-    color: "bg-orange-100 text-orange-600",
+    image:
+      "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&auto=format&fit=crop&q=80",
   },
   {
-    name: "Home & Living",
+    name: "Home & Furniture",
+    subtitle: "Modern Living & Decor",
     link: "/category/home-living",
-    icon: Sofa,
-    color: "bg-green-100 text-green-600",
+    image:
+      "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&auto=format&fit=crop&q=80",
   },
   {
     name: "Beauty & Health",
+    subtitle: "Skincare, Scents & Care",
     link: "/category/beauty-health",
-    icon: Sparkles,
-    color: "bg-pink-100 text-pink-600",
+    image:
+      "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600&auto=format&fit=crop&q=80",
   },
   {
-    name: "Sports",
+    name: "Watches & Jewelry",
+    subtitle: "Smartwatches & Luxury",
+    link: "/category/watches",
+    image:
+      "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&auto=format&fit=crop&q=80",
+  },
+  {
+    name: "Sports & Fitness",
+    subtitle: "Gym Equipment & Gear",
     link: "/category/sports",
-    icon: Dumbbell,
-    color: "bg-blue-100 text-blue-600",
+    image:
+      "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=600&auto=format&fit=crop&q=80",
   },
   {
-    name: "Toys & Games",
-    link: "/category/toys-games",
-    icon: Gamepad2,
-    color: "bg-purple-100 text-purple-600",
+    name: "Gaming & VR",
+    subtitle: "Controllers & Consoles",
+    link: "/category/gaming",
+    image:
+      "https://images.unsplash.com/photo-1600080972464-8e5f35f63d08?w=600&auto=format&fit=crop&q=80",
   },
   {
-    name: "Groceries",
+    name: "Groceries & Fresh",
+    subtitle: "Organic & Daily Staples",
     link: "/category/groceries",
-    icon: ShoppingBasket,
-    color: "bg-yellow-100 text-yellow-600",
+    image:
+      "https://images.unsplash.com/photo-1542838132-92c53300491e?w=600&auto=format&fit=crop&q=80",
   },
   {
-    name: "Automotive",
+    name: "Automotive & Tools",
+    subtitle: "Car Accessories & Care",
     link: "/category/automotive",
-    icon: Car,
-    color: "bg-sky-100 text-sky-600",
+    image:
+      "https://images.unsplash.com/photo-1563720223185-11003d516935?w=600&auto=format&fit=crop&q=80",
   },
   {
-    name: "Books",
+    name: "Books & Media",
+    subtitle: "Novels, Art & Study",
     link: "/category/books",
-    icon: BookOpen,
-    color: "bg-indigo-100 text-indigo-600",
-  },
-  {
-    name: "More",
-    link: "/categories",
-    icon: MoreHorizontal,
-    color: "bg-gray-100 text-gray-600",
+    image:
+      "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&auto=format&fit=crop&q=80",
   },
 ];
 
