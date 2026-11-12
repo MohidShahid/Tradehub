@@ -30,8 +30,7 @@ const isAuthenticated = async (req, res, next) => {
 const authorizeSeller = async (req, res, next) => {
   try {
     const user = await User.findById(req.user.userId);
-    console.log(req.user)
-    console.log(user)
+
     if (!user || !user.isSeller) {
       return res.status(403).json({
         message: "Only sellers can perform this action",

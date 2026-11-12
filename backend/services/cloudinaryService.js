@@ -43,4 +43,20 @@ const uploadToCloudinary = (buffer) => {
     stream.end(buffer);
   });
 };
-module.exports = {uploadToCloudinary};
+
+const extractPublicIdFromUrl = (url) => {
+  if (!url || typeof url !== "string" || !url.includes("res.cloudinary.com")) {
+    return null;
+  }
+
+  const match = url.match(/\/upload\/(?:v\d+\/)?(.+?)(?:\.[^./]+)?$/);
+  return match ? match[1] : null;
+};
+
+const deleteFromCloudinary = async (url) => {
+  const publicId = extractPublicIdFromUrl(url);
+  if (!publicId) return null;
+  return cloudinary.uploader.destroy(publicId);
+};
+
+module.exports = { uploadToCloudinary, deleteFromCloudinary };
