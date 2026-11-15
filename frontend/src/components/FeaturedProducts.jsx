@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import ProductCard from "./ProductCard";
 import { Link } from "react-router-dom";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { getProducts } from "@/services/productService";
 
 const FeaturedProducts = () => {
@@ -25,12 +25,13 @@ const FeaturedProducts = () => {
         {/* Section Header */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6 md:mb-8">
           <div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-gray-900">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-gray-900">
               Featured <span className="text-(--color-accent)">Products</span>
             </h2>
 
             <p className="mt-1 text-xs sm:text-sm text-(--color-text-secondary)">
-              Explore top-rated products curated from verified independent merchants.
+              Explore top-rated products curated from verified independent
+              merchants.
             </p>
           </div>
 

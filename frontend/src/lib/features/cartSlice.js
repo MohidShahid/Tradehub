@@ -1,24 +1,19 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { toast } from "@/components/ui/toast";
+import { getProductId } from "@/utils/helpers";
 
 const initialState = {
   Items: [],
-};
-
-const getItemId = (item) => {
-  if (!item) return "";
-  if (typeof item === "string" || typeof item === "number") return String(item);
-  return String(item._id || item.id || "");
-};
+};    
 
 export const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
     addItemsCart: (state, action) => {
-      const payloadId = getItemId(action.payload);
+      const payloadId = getProductId(action.payload);
       const index = state.Items.findIndex(
-        (item) => getItemId(item) === payloadId
+        (item) => getProductId(item) === payloadId
       );
 
       if (index !== -1) {
@@ -37,9 +32,9 @@ export const cartSlice = createSlice({
     },
 
     removeItemsCart: (state, action) => {
-      const payloadId = getItemId(action.payload);
+      const payloadId = getProductId(action.payload);
       const index = state.Items.findIndex(
-        (item) => getItemId(item) === payloadId
+        (item) => getProductId(item) === payloadId
       );
 
       if (index !== -1) {
@@ -57,19 +52,23 @@ export const cartSlice = createSlice({
     },
 
     deleteItemCart: (state, action) => {
-      const payloadId = getItemId(action.payload);
+      const payloadId = getProductId(action.payload);
       state.Items = state.Items.filter(
-        (item) => getItemId(item) !== payloadId
+        (item) => getProductId(item) !== payloadId
       );
       toast.add({
         type: "success",
         description: "Removed from Cart Successfully",
       });
     },
+
+    clearCart: (state) => {
+      state.Items = [];
+    },
   },
 });
 
-export const { addItemsCart, removeItemsCart, deleteItemCart } =
+export const { addItemsCart, removeItemsCart, deleteItemCart, clearCart } =
   cartSlice.actions;
 
 export default cartSlice.reducer;

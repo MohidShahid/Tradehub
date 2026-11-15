@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useId, useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { categories } from "@/static/data";
@@ -23,60 +23,142 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import ProductImageUpload from "@/components/shop/ProductImageUpload";
+import ProductVariationsSection from "@/components/shop/ProductVariationsSection";
 import { Spinner } from "@/components/ui/spinner";
 import { createProduct } from "@/services/productService";
 import { toast } from "../../components/ui/toast";
+import {
+  serializeOptionsForSubmit,
+  serializeVariantsForSubmit,
+  validateProductForm,
+} from "@/utils/productVariants";
+
+const INITIAL_PRODUCT = {
+  name: "",
+  description: "",
+  regularPrice: "",
+  salePrice: "",
+  stock: "",
+  sku: "",
+  category: "",
+};
 
 const CreateProduct = () => {
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
-  const initialProduct = {
-    name: "",
-    description: "",
-    regularPrice: "",
-    salePrice: "",
-    stock: "",
-    sku: "",
-    category: "",
-  };
-  const [product, setProduct] = useState(initialProduct);
+  const [product, setProduct] = useState(INITIAL_PRODUCT);
+  const [hasVariants, setHasVariants] = useState(false);
+  const [options, setOptions] = useState([]);
+  const [variants, setVariants] = useState([]);
+  const [errors, setErrors] = useState({});
+  const [variantErrors, setVariantErrors] = useState({});
+
+  const formId = useId();
+  const nameRef = useRef(null);
+  const descriptionRef = useRef(null);
+  const regularPriceRef = useRef(null);
+  const salePriceRef = useRef(null);
+  const stockRef = useRef(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setProduct((previousData) => ({
-      ...previousData,
-      [name]: value,
-    }));
+    setProduct((prev) => ({ ...prev, [name]: value }));
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
   };
 
   const handleCategoryChange = (value) => {
-    setProduct((previousData) => ({
-      ...previousData,
-      category: value,
-    }));
+    setProduct((prev) => ({ ...prev, category: value }));
+    if (errors.category) {
+      setErrors((prev) => ({ ...prev, category: "" }));
+    }
   };
 
-  const handleCreateProduct = async () => {
-    try {
-      if (images.length === 0) {
-        toast.add({
-          type: "error",
-          description: "Please upload at least one product image",
-        });
-        return;
+  const handleImagesChange = (updater) => {
+    setImages((prev) => {
+      const next = typeof updater === "function" ? updater(prev) : updater;
+      if (next.length > 0 && errors.images) {
+        setErrors((errPrev) => ({ ...errPrev, images: "" }));
       }
+      return next;
+    });
+  };
 
+  const clearVariationError = (combKey) => {
+    if (errors.variations) {
+      setErrors((prev) => ({ ...prev, variations: "" }));
+    }
+    if (combKey && variantErrors[combKey]) {
+      setVariantErrors((prev) => {
+        const next = { ...prev };
+        delete next[combKey];
+        return next;
+      });
+    } else if (!combKey && Object.keys(variantErrors).length > 0) {
+      setVariantErrors({});
+    }
+  };
+
+  const handleCreateProduct = async (e) => {
+    e.preventDefault();
+    if (loading) return;
+
+    const validation = validateProductForm(
+      {
+        ...product,
+        hasVariants,
+        options,
+        variants,
+      },
+      { imageCount: images.length },
+    );
+
+    setErrors(validation.errors);
+    setVariantErrors(validation.variantErrors);
+
+    if (!validation.isValid) {
+      if (validation.errors.name) nameRef.current?.focus();
+      else if (validation.errors.description) descriptionRef.current?.focus();
+      else if (validation.errors.regularPrice) regularPriceRef.current?.focus();
+      else if (validation.errors.salePrice) salePriceRef.current?.focus();
+      else if (validation.errors.stock) stockRef.current?.focus();
+
+      const firstMsg =
+        Object.values(validation.errors).find(Boolean) ||
+        "Please fix the highlighted fields";
+      toast.add({ type: "error", description: firstMsg });
+      return;
+    }
+
+    try {
       setLoading(true);
       const formData = new FormData();
 
-      formData.append("name", product.name);
-      formData.append("description", product.description);
-      formData.append("regularPrice", product.regularPrice);
-      formData.append("salePrice", product.salePrice);
-      formData.append("stock", product.stock);
+      formData.append("name", product.name.trim());
+      formData.append("description", product.description.trim());
       formData.append("category", product.category);
-      if (product.sku) {
-        formData.append("sku", product.sku);
+      formData.append("hasVariants", String(hasVariants));
+
+      if (product.sku.trim()) {
+        formData.append("sku", product.sku.trim());
+      }
+
+      if (hasVariants) {
+        formData.append(
+          "options",
+          JSON.stringify(serializeOptionsForSubmit(options)),
+        );
+        formData.append(
+          "variants",
+          JSON.stringify(serializeVariantsForSubmit(variants)),
+        );
+      } else {
+        formData.append("regularPrice", product.regularPrice);
+        if (product.salePrice !== "") {
+          formData.append("salePrice", product.salePrice);
+        }
+        formData.append("stock", product.stock);
       }
 
       images.forEach((image) => {
@@ -90,11 +172,16 @@ const CreateProduct = () => {
         type: "success",
         description: response?.data?.message || "Product Created Successfully",
       });
-      setLoading(false);
-      setProduct(initialProduct);
+
+      setProduct(INITIAL_PRODUCT);
       setImages([]);
+      setHasVariants(false);
+      setOptions([]);
+      setVariants([]);
+      setErrors({});
+      setVariantErrors({});
     } catch (error) {
-      console.log("Backend error:", error.response);
+      console.error("Create product error:", error.response || error);
       toast.add({
         type: "error",
         description:
@@ -103,13 +190,12 @@ const CreateProduct = () => {
           "Product Create failed",
       });
     } finally {
-      setProduct(initialProduct);
-      setImages([]);
       setLoading(false);
     }
   };
+
   return (
-    <div className="px-10 py-5 md:w-[70%]">
+    <div className="px-4 py-5 sm:px-8 md:w-[80%] lg:w-[75%]">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -125,104 +211,197 @@ const CreateProduct = () => {
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
+
       <div className="flex flex-col gap-2">
-        <h1 className="font-bold text-3xl pt-5">Create Product</h1>
-        <p className="text-gray-400">
-          Add a product to your shop and make it available to customers online
+        <h1 className="pt-5 text-3xl font-bold">
+          Create <span className="text-(--color-accent-hover)">Product</span>
+        </h1>
+        <p className="text-muted-foreground">
+          Add a product to your shop and configure pricing, stock, or variations
+          for customers online
         </p>
       </div>
-      <div className="flex flex-col gap-7 pt-7">
+
+      <form
+        onSubmit={handleCreateProduct}
+        noValidate
+        className="flex flex-col gap-6 pt-7"
+      >
         <Field>
-          <FieldLabel>
+          <FieldLabel htmlFor={`${formId}-name`}>
             Product name<span className="text-destructive">*</span>
           </FieldLabel>
           <Input
-            type={"text"}
+            ref={nameRef}
+            id={`${formId}-name`}
+            type="text"
             name="name"
-            placeholder={"Enter the product name"}
-            className={"p-5"}
+            placeholder="Enter the product name"
+            className="p-5"
             value={product.name}
-            onChange={(e) => handleChange(e)}
+            onChange={handleChange}
+            aria-invalid={Boolean(errors.name)}
+            aria-describedby={errors.name ? `${formId}-name-error` : undefined}
           />
+          {errors.name && (
+            <p id={`${formId}-name-error`} className="text-xs text-destructive">
+              {errors.name}
+            </p>
+          )}
         </Field>
+
         <Field>
-          <FieldLabel>
+          <FieldLabel htmlFor={`${formId}-description`}>
             Product description<span className="text-destructive">*</span>
           </FieldLabel>
           <Textarea
-            type={"text"}
+            ref={descriptionRef}
+            id={`${formId}-description`}
             name="description"
-            placeholder={"Enter the product description"}
-            className={"p-5 h-32"}
+            placeholder="Enter the product description"
+            className="h-32 p-4"
             value={product.description}
-            onChange={(e) => handleChange(e)}
-          />{" "}
+            onChange={handleChange}
+            aria-invalid={Boolean(errors.description)}
+            aria-describedby={
+              errors.description ? `${formId}-description-error` : undefined
+            }
+          />
+          {errors.description && (
+            <p
+              id={`${formId}-description-error`}
+              className="text-xs text-destructive"
+            >
+              {errors.description}
+            </p>
+          )}
         </Field>
-        <div className="flex gap-3 ">
+
+        {!hasVariants && (
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <Field>
+              <FieldLabel htmlFor={`${formId}-regularPrice`}>
+                Regular price (Rs.)<span className="text-destructive">*</span>
+              </FieldLabel>
+              <Input
+                ref={regularPriceRef}
+                id={`${formId}-regularPrice`}
+                type="number"
+                name="regularPrice"
+                min="1"
+                step="any"
+                placeholder="Enter regular price (Rs.)"
+                className="p-5"
+                value={product.regularPrice}
+                onChange={handleChange}
+                aria-invalid={Boolean(errors.regularPrice)}
+                aria-describedby={
+                  errors.regularPrice
+                    ? `${formId}-regularPrice-error`
+                    : undefined
+                }
+              />
+              {errors.regularPrice && (
+                <p
+                  id={`${formId}-regularPrice-error`}
+                  className="text-xs text-destructive"
+                >
+                  {errors.regularPrice}
+                </p>
+              )}
+            </Field>
+
+            <Field>
+              <FieldLabel htmlFor={`${formId}-salePrice`}>
+                Sale price (Rs.)
+              </FieldLabel>
+              <Input
+                ref={salePriceRef}
+                id={`${formId}-salePrice`}
+                type="number"
+                name="salePrice"
+                min="0"
+                step="any"
+                placeholder="Optional sale price (Rs.)"
+                className="p-5"
+                value={product.salePrice}
+                onChange={handleChange}
+                aria-invalid={Boolean(errors.salePrice)}
+                aria-describedby={
+                  errors.salePrice ? `${formId}-salePrice-error` : undefined
+                }
+              />
+              {errors.salePrice && (
+                <p
+                  id={`${formId}-salePrice-error`}
+                  className="text-xs text-destructive"
+                >
+                  {errors.salePrice}
+                </p>
+              )}
+            </Field>
+
+            <Field>
+              <FieldLabel htmlFor={`${formId}-stock`}>
+                Stock<span className="text-destructive">*</span>
+              </FieldLabel>
+              <Input
+                ref={stockRef}
+                id={`${formId}-stock`}
+                type="number"
+                name="stock"
+                min="0"
+                step="1"
+                placeholder="Enter the stock"
+                className="p-5"
+                value={product.stock}
+                onChange={handleChange}
+                aria-invalid={Boolean(errors.stock)}
+                aria-describedby={
+                  errors.stock ? `${formId}-stock-error` : undefined
+                }
+              />
+              {errors.stock && (
+                <p
+                  id={`${formId}-stock-error`}
+                  className="text-xs text-destructive"
+                >
+                  {errors.stock}
+                </p>
+              )}
+            </Field>
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <Field>
-            <FieldLabel>
-              Regular price<span className="text-destructive">*</span>
-            </FieldLabel>
+            <FieldLabel htmlFor={`${formId}-sku`}>SKU (Optional)</FieldLabel>
             <Input
-              type={"number"}
-              name="regularPrice"
-              placeholder={"Enter the regular price $"}
-              className={"p-5"}
-              value={product.regularPrice}
-              onChange={(e) => handleChange(e)}
-            />{" "}
-          </Field>
-          <Field>
-            <FieldLabel>
-              Sale price<span className="text-destructive">*</span>
-            </FieldLabel>
-            <Input
-              type={"number"}
-              name="salePrice"
-              placeholder={"Enter the sale price $"}
-              className={"p-5"}
-              value={product.salePrice}
-              onChange={(e) => handleChange(e)}
-            />
-          </Field>
-          <Field>
-            <FieldLabel>
-              Stock<span className="text-destructive">*</span>
-            </FieldLabel>
-            <Input
-              type={"number"}
-              name="stock"
-              placeholder={"Enter the stock"}
-              className={"p-5"}
-              value={product.stock}
-              onChange={(e) => handleChange(e)}
-            />{" "}
-          </Field>
-        </div>
-        <div className="flex w-full gap-3">
-          <Field className="flex-1 min-w-0">
-            <FieldLabel>SKU (Optional)</FieldLabel>
-            <Input
+              id={`${formId}-sku`}
               type="text"
               name="sku"
-              placeholder="Enter the SKU"
+              placeholder="Enter base SKU"
               className="h-12 w-full"
               value={product.sku}
-              onChange={(e) => handleChange(e)}
+              onChange={handleChange}
             />
           </Field>
 
-          <Field className="flex-1 min-w-0 justify-between">
-            <FieldLabel>
+          <Field>
+            <FieldLabel htmlFor={`${formId}-category`}>
               Category<span className="text-destructive">*</span>
             </FieldLabel>
 
             <Select
               items={categories}
-              value={product?.category}
+              value={product.category}
               onValueChange={handleCategoryChange}
             >
-              <SelectTrigger className="w-full p-6 justify-between">
+              <SelectTrigger
+                id={`${formId}-category`}
+                className="h-12 w-full justify-between"
+                aria-invalid={Boolean(errors.category)}
+              >
                 <SelectValue placeholder="Select Category" />
               </SelectTrigger>
 
@@ -237,30 +416,57 @@ const CreateProduct = () => {
                 </SelectGroup>
               </SelectContent>
             </Select>
+            {errors.category && (
+              <p className="text-xs text-destructive">{errors.category}</p>
+            )}
           </Field>
         </div>
+
         <div>
-          <ProductImageUpload images={images} setImages={setImages} />
+          <ProductImageUpload images={images} setImages={handleImagesChange} />
+          {errors.images && (
+            <p className="mt-1.5 text-xs text-destructive">{errors.images}</p>
+          )}
         </div>
-        <div className="flex justify-end mt-5">
+
+        <ProductVariationsSection
+          hasVariants={hasVariants}
+          onToggleVariants={setHasVariants}
+          options={options}
+          setOptions={setOptions}
+          variants={variants}
+          setVariants={setVariants}
+          defaultPricing={{
+            regularPrice: product.regularPrice,
+            salePrice: product.salePrice,
+            stock: product.stock || "0",
+          }}
+          productName={product.name}
+          baseSku={product.sku}
+          newImages={images}
+          error={errors.variations}
+          variantErrors={variantErrors}
+          onClearVariationError={clearVariationError}
+        />
+
+        <div className="mt-3 flex justify-end">
           <Button
-            className={
-              "py-6 bg-(--color-accent) text-xl cursor-pointer w-[50%]"
-            }
-            onClick={handleCreateProduct}
+            type="submit"
+            disabled={loading}
+            className="w-full cursor-pointer bg-(--color-accent) h-12 text-base font-semibold rounded-xl sm:w-1/2 gap-2"
           >
             {!loading ? (
               <>
-                <PlusCircle className="size-7" /> Add Product
+                <PlusCircle className="size-6" /> Add Product
               </>
             ) : (
               <>
-                <Spinner /> Adding Product
+                <Spinner /> Adding Product...
               </>
             )}
           </Button>
         </div>
-      </div>
+      </form>
     </div>
   );
 };

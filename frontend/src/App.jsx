@@ -1,11 +1,14 @@
 // import { useState } from 'react'
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import {
   LoginPage,
   SignupPage,
   HomePage,
   AccountActivation,
   UserProfile,
+  AddressPage,
+  CheckoutPage,
+  OrderSuccessPage,
 } from "./Routes";
 import "./App.css";
 import { useEffect } from "react";
@@ -27,25 +30,24 @@ import AllProducts from "./pages/seller/AllProducts";
 import ProductDetails from "./pages/ProductDetails";
 import ShopInfoPage from "./pages/ShopInfoPage";
 import Coupons from "./pages/seller/Coupons";
+import SellerOrders from "./pages/seller/Orders";
+import ShopOnboarding from "./pages/seller/ShopOnboarding";
+import ShopSettings from "./pages/seller/ShopSettings";
 
 function App() {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   useEffect(() => {
     dispatch(LoadUserRequest());
     getUser()
       .then((response) => {
         dispatch(LoadUserSuccess(response?.data?.data));
-        navigate("/");
       })
       .catch((err) => {
-        console.log(err.response);
         dispatch(
           LoadUserFail(err.response?.data?.message || "Failed to load user"),
         );
-        navigate("/login");
       });
-  }, []);
+  }, [dispatch]);
   const { loading } = useSelector((state) => state.user);
   if (loading) {
     return <LoadingScreen message="Preparing your marketplace..." />;
@@ -56,8 +58,19 @@ function App() {
           <Route element={<MainLayout />}>
             <Route path="/" element={<HomePage />} />
             <Route path="/cart" element={<CartPage />} />
+            <Route path="/checkout" element={<CheckoutPage />} />
+            <Route path="/order/success" element={<OrderSuccessPage />} />
             <Route path="/wishlist" element={<WishlistPage />} />
             <Route path="/user-profile" element={<UserProfile />} />
+            <Route path="/user-profile/:section" element={<UserProfile />} />
+            <Route path="/address" element={<AddressPage />} />
+            <Route path="/address/create" element={<AddressPage />} />
+            <Route path="/seller/onboarding" element={<ShopOnboarding />} />
+            <Route path="/seller/create-shop" element={<ShopOnboarding />} />
+            <Route path="/product/:id" element={<ProductDetails />} />
+            <Route path="/product/:slug/:id" element={<ProductDetails />} />
+            <Route path="/products/:id" element={<ProductDetails />} />
+            <Route path="/products/:slug/:id" element={<ProductDetails />} />
             <Route path="/:slug/:id" element={<ProductDetails />} />
           </Route>
           <Route path="/login" element={<LoginPage />} />
@@ -73,6 +86,8 @@ function App() {
             <Route path="dashboard" element={<SellerDashboard />} />
             <Route path="products/create" element={<CreateProduct />} />
             <Route path="products" element={<AllProducts />} />
+            <Route path="orders" element={<SellerOrders />} />
+            <Route path="shop" element={<ShopSettings />} />
             <Route path="coupons" element={<Coupons />} />
           </Route>
         </Routes>

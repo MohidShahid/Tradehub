@@ -4,6 +4,12 @@ import {
   removeFromWhishlist,
 } from "@/lib/features/wishlistSlice";
 import { addItemsCart, removeItemsCart } from "@/lib/features/cartSlice";
+import {
+  getProductId,
+  getProductImage,
+  getProductPath,
+  getProductPricing,
+} from "@/utils/helpers";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
@@ -14,46 +20,20 @@ const ProductCard = ({ product }) => {
   const wishlist = useSelector((state) => state.wishlist.wishlist);
   const cartItems = useSelector((state) => state.cart.Items);
 
-  const productId = product._id || product.id;
+  const productId = getProductId(product);
   const isInWishlist = wishlist.some(
-    (item) => String(item._id || item.id) === String(productId)
+    (item) => getProductId(item) === productId,
   );
 
-  const cartItem = cartItems.find(
-    (item) => String(item._id || item.id) === String(productId)
-  );
+  const cartItem = cartItems.find((item) => getProductId(item) === productId);
   const cartQuantity = cartItem?.quantity || 0;
 
-  const imageSrc =
-    product.featuredImage ||
-    product.image ||
-    (Array.isArray(product.images) && product.images[0]) ||
-    "/placeholder.png";
-
-  const currentPrice =
-    product.salePrice != null &&
-    product.salePrice > 0 &&
-    product.salePrice < (product.regularPrice || Infinity)
-      ? product.salePrice
-      : (product.price ?? product.regularPrice ?? 0);
-
-  const originalPrice =
-    product.regularPrice != null && product.regularPrice > currentPrice
-      ? product.regularPrice
-      : (product.oldPrice && product.oldPrice > currentPrice
-          ? product.oldPrice
-          : null);
-
-  const discountPercent =
-    originalPrice && originalPrice > currentPrice
-      ? Math.round(((originalPrice - currentPrice) / originalPrice) * 100)
-      : (product.discount || 0);
+  const imageSrc = getProductImage(product);
+  const { currentPrice, originalPrice, discountPercent } =
+    getProductPricing(product);
 
   const handleCardClick = () => {
-    const slug = encodeURIComponent(
-      String(product.name || "product").toLowerCase().replace(/\s+/g, "-")
-    );
-    navigate(`/${slug}/${productId}`);
+    navigate(getProductPath(product));
   };
 
   return (
@@ -91,7 +71,7 @@ const ProductCard = ({ product }) => {
             dispatch(
               isInWishlist
                 ? removeFromWhishlist(productId)
-                : addInWhishlist(product)
+                : addInWhishlist(product),
             );
           }}
         >
@@ -113,7 +93,10 @@ const ProductCard = ({ product }) => {
 
           {/* Rating */}
           <div className="mt-1 flex items-center gap-1 text-[10px] sm:text-[11px] text-gray-500">
-            <Star size={11} className="text-amber-400 fill-amber-400 shrink-0" />
+            <Star
+              size={11}
+              className="text-amber-400 fill-amber-400 shrink-0"
+            />
             <span className="font-bold text-gray-800">
               {product.rating ?? "4.8"}
             </span>
@@ -153,9 +136,7 @@ const ProductCard = ({ product }) => {
                   dispatch(removeItemsCart(product));
                 }}
                 title={
-                  cartQuantity === 1
-                    ? "Remove from cart"
-                    : "Decrease quantity"
+                  cartQuantity === 1 ? "Remove from cart" : "Decrease quantity"
                 }
               >
                 <Minus size={11} strokeWidth={2.5} />

@@ -1,13 +1,6 @@
 import { CategoryArray } from "@/static/Categories";
 import { Link } from "react-router-dom";
-import {
-  ArrowRight,
-  ArrowUpRight,
-  Sparkles,
-  Store,
-  ShieldCheck,
-  Zap,
-} from "lucide-react";
+import { ArrowRight, ArrowUpRight, Sparkles } from "lucide-react";
 
 const Categories = () => {
   return (

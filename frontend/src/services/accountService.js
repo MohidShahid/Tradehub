@@ -35,6 +35,18 @@ const authenticateSeller = async ()=>{
   return await axioss.get(`${API_URL}/v1/seller/authenticate`);
 }
 
+const createShop = async (data) => {
+  return await axioss.post(`${API_URL}/v1/seller/create-shop`, data);
+};
+
+const getMyShop = async () => {
+  return await axioss.get(`${API_URL}/v1/seller/my-shop`);
+};
+
+const updateMyShop = async (data) => {
+  return await axioss.put(`${API_URL}/v1/seller/my-shop`, data);
+};
+
 export {
   registerAccount,
   accountActivation,
@@ -43,5 +55,8 @@ export {
   registerSeller,
   Logout,
   updateUserProfile,
-  authenticateSeller
+  authenticateSeller,
+  createShop,
+  getMyShop,
+  updateMyShop,
 };

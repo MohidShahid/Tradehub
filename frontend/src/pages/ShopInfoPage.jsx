@@ -1,4 +1,3 @@
-
 import { useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import {
@@ -11,12 +10,9 @@ import {
   ChevronRight,
   ShoppingBag,
   Store,
-
   Package,
-
   Clock,
   ArrowUpDown,
-
 } from "lucide-react";
 
 import { products } from "@/static/data";
@@ -24,17 +20,9 @@ import { products } from "@/static/data";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Select,
   SelectContent,
@@ -68,11 +56,7 @@ const demoShop = {
 const getProductInfo = (product) => ({
   id: product.id ?? product._id,
   name: product.name ?? product.title ?? "Product",
-  image:
-    product.image ??
-    product.images?.[0] ??
-    product.thumbnail ??
-    "",
+  image: product.image ?? product.images?.[0] ?? product.thumbnail ?? "",
   price: Number(product.price) || 0,
   oldPrice: Number(product.originalPrice ?? product.oldPrice) || 0,
   category: product.category ?? "Other",
@@ -92,8 +76,7 @@ const getProductInfo = (product) => ({
     (typeof product.seller === "string" ? product.seller : ""),
 });
 
-const formatPrice = (price) =>
-  `Rs. ${Number(price).toLocaleString("en-PK")}`;
+const formatPrice = (price) => `Rs. ${Number(price).toLocaleString("en-PK")}`;
 
 const ShopInfoPage = () => {
   const { shopId } = useParams();
@@ -107,10 +90,7 @@ const ShopInfoPage = () => {
   // Replace this demo object with your actual shop data from your API.
   const shop = demoShop;
 
-  const allProducts = useMemo(
-    () => products.map(getProductInfo),
-    [],
-  );
+  const allProducts = useMemo(() => products.map(getProductInfo), []);
 
   // Prefer filtering by the real shop ID. Name matching is a fallback
   // for static/demo data that doesn't yet contain shop IDs.
@@ -133,10 +113,7 @@ const ShopInfoPage = () => {
   }, [allProducts, shop, shopId]);
 
   const categories = useMemo(
-    () => [
-      "all",
-      ...new Set(shopProducts.map((product) => product.category)),
-    ],
+    () => ["all", ...new Set(shopProducts.map((product) => product.category))],
     [shopProducts],
   );
 
@@ -175,9 +152,7 @@ const ShopInfoPage = () => {
     return (
       <div className="flex min-h-[60vh] flex-col items-center justify-center px-4 text-center">
         <Store className="mb-4 size-14 text-stone-300" />
-        <h1 className="text-2xl font-bold text-stone-900">
-          Shop not found
-        </h1>
+        <h1 className="text-2xl font-bold text-stone-900">Shop not found</h1>
         <p className="mt-2 text-stone-500">
           This shop may no longer be available.
         </p>
@@ -253,9 +228,7 @@ const ShopInfoPage = () => {
                   )}
                 </div>
 
-                <p className="mt-1 text-sm text-stone-500">
-                  {shop.tagline}
-                </p>
+                <p className="mt-1 text-sm text-stone-500">{shop.tagline}</p>
 
                 <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
                   <span className="flex items-center gap-1.5">
@@ -296,8 +269,6 @@ const ShopInfoPage = () => {
           </div>
         </section>
 
-
-
         {/* Main content */}
         <div className="mt-8 grid items-start gap-7 lg:grid-cols-[280px_minmax(0,1fr)]">
           {/* Shop sidebar */}
@@ -337,9 +308,7 @@ const ShopInfoPage = () => {
                       <p className="text-sm font-semibold text-stone-900">
                         Store Name
                       </p>
-                      <p className="mt-1 text-sm text-stone-500">
-                        {shop.name}
-                      </p>
+                      <p className="mt-1 text-sm text-stone-500">{shop.name}</p>
                     </div>
                   </div>
 
@@ -370,7 +339,6 @@ const ShopInfoPage = () => {
                   >
                     Products ({shopProducts.length})
                   </TabsTrigger>
-
 
                   <TabsTrigger
                     value="reviews"
@@ -406,9 +374,7 @@ const ShopInfoPage = () => {
                         <SelectItem value="price-high">
                           Price: High to Low
                         </SelectItem>
-                        <SelectItem value="rating">
-                          Highest Rated
-                        </SelectItem>
+                        <SelectItem value="rating">Highest Rated</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -429,9 +395,7 @@ const ShopInfoPage = () => {
 
                     {categories.map((item) => {
                       const selected =
-                        item === "all"
-                          ? category === "all"
-                          : category === item;
+                        item === "all" ? category === "all" : category === item;
 
                       return (
                         <Button
@@ -459,8 +423,7 @@ const ShopInfoPage = () => {
                       const discount =
                         item.oldPrice > item.price
                           ? Math.round(
-                              ((item.oldPrice - item.price) /
-                                item.oldPrice) *
+                              ((item.oldPrice - item.price) / item.oldPrice) *
                                 100,
                             )
                           : 0;
@@ -652,8 +615,8 @@ const ShopInfoPage = () => {
 
                       <p className="max-w-sm text-sm leading-6 text-stone-500">
                         Based on {shop.reviewCount} shop reviews. Connect your
-                        reviews API to show individual buyer feedback,
-                        verified purchases, and review dates.
+                        reviews API to show individual buyer feedback, verified
+                        purchases, and review dates.
                       </p>
                     </div>
                   </CardContent>

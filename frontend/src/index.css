@@ -159,3 +159,80 @@
     @apply font-sans;
   }
 }
+
+/* Wishlist card stretched-link, target-size adaptation & group view transitions */
+.wishlist-card:has(a.card-link) {
+  position: relative;
+}
+
+.wishlist-card a.card-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+.wishlist-card:has(a.card-link) :is(a:not(.card-link), button) {
+  z-index: 1;
+}
+
+.wishlist-card:has(a.card-link) :is(a:not(.card-link), button):not(.absolute) {
+  position: relative;
+}
+
+.wishlist-card a.card-link:focus-visible {
+  outline: none;
+}
+
+.wishlist-card:has(a.card-link:focus-visible) {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+@media (pointer: coarse) {
+  .wishlist-icon-btn::after {
+    content: "";
+    position: absolute;
+    inset: -8px;
+  }
+
+  .wishlist-card footer button {
+    min-block-size: 44px;
+    min-inline-size: 44px;
+  }
+}
+
+:root.wishlist-transitioning {
+  view-transition-name: none;
+}
+
+::view-transition {
+  pointer-events: none;
+}
+
+.wishlist-card-item {
+  view-transition-class: wishlist-card;
+}
+
+::view-transition-group(.wishlist-card) {
+  animation-duration: 0.28s;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+::view-transition-old(.wishlist-card):only-child {
+  animation: wishlist-fade-out 0.2s ease-in forwards;
+}
+
+@keyframes wishlist-fade-out {
+  to {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}

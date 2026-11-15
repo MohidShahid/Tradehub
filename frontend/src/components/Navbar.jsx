@@ -7,11 +7,11 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
   BadgeCheckIcon,
-  BellIcon,
   CreditCardIcon,
   LogOutIcon,
   StoreIcon,
-
+  PackageIcon,
+  ClipboardListIcon,
 } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -28,9 +28,8 @@ import { Logout } from "@/services/accountService";
 import { toast } from "./ui/toast";
 import { authenticateSeller } from "@/services/accountService";
 import MobileNav from "./MobileNav";
-import {setShopDetails} from "../lib/features/shopSlice"
+import { setShopDetails } from "../lib/features/shopSlice";
 import { useDispatch } from "react-redux";
-
 
 const Navbar = () => {
   const state = useSelector((state) => state.user);
@@ -82,14 +81,14 @@ const Navbar = () => {
   const BecomeSeller = async () => {
     try {
       const response = await authenticateSeller();
-      dispatch(setShopDetails(response?.data?.data))
-      navigate(`/shop/${response?.data?.data.owner}`);
-    } catch (error) {
-      toast.add({
-        type: "error",
-        description: error.response?.data?.message || error.message,
-      });
-      navigate("/signup");
+      if (response?.data?.hasShop && response?.data?.data) {
+        dispatch(setShopDetails(response?.data?.data));
+        navigate("/seller/dashboard");
+      } else {
+        navigate("/seller/onboarding");
+      }
+    } catch {
+      navigate("/seller/onboarding");
     }
   };
 
@@ -113,8 +112,12 @@ const Navbar = () => {
         inputRef={inputRef}
       />
       <div className="hidden items-center justify-between text-sm gap-6 md:flex">
-        <Link to="/wishlist" className="relative cursor-pointer hover">
-          <HeartIcon color="#14532d" />
+        <Link
+          to="/wishlist"
+          aria-label={`Wishlist${wishlist.length > 0 ? `, ${wishlist.length} items` : ""}`}
+          className="relative cursor-pointer"
+        >
+          <HeartIcon color="#14532d" aria-hidden="true" />
           {wishlist.length > 0 && (
             <span className="absolute -right-2 -top-2 flex h-5 min-w-5 items-center justify-center rounded-full bg-orange-500 px-1 text-xs font-bold text-(--color-primary)">
               {wishlist.length}
@@ -131,13 +134,23 @@ const Navbar = () => {
           )}
         </Link>
         {state.isAuthenticated && (
-          <Link
-            className="flex items-center gap-2.5 text-white bg-(--color-accent-hover) px-4 py-2 rounded-3xl"
-            onClick={BecomeSeller}
-          >
-            {/* <Store size={22} /> */}
-            <p>Become Seller</p>
-          </Link>
+          state.user?.isSeller ? (
+            <Link
+              to="/seller/dashboard"
+              className="inline-flex items-center gap-2 text-white bg-slate-900 h-10 px-5 rounded-full text-xs font-semibold hover:bg-slate-800 transition shadow-2xs"
+            >
+              <StoreIcon size={16} />
+              <span>Seller Panel</span>
+            </Link>
+          ) : (
+            <button
+              type="button"
+              className="inline-flex items-center gap-2 text-white bg-(--color-accent-hover) h-10 px-5 rounded-full text-xs font-semibold cursor-pointer hover:opacity-95 transition shadow-2xs"
+              onClick={BecomeSeller}
+            >
+              <p>Become Seller</p>
+            </button>
+          )
         )}
 
         {state.isAuthenticated && state.user ? (
@@ -155,25 +168,50 @@ const Navbar = () => {
                 </Button>
               }
             />
-            <DropdownMenuContent align="end" className={"w-52"}>
+            <DropdownMenuContent align="end" className="w-56">
               <DropdownMenuGroup>
-                <DropdownMenuItem className={"cursor-pointer"}>
-                  <BadgeCheckIcon />
-                  <Link to={"/user-profile"}>Profile</Link>
+                <DropdownMenuItem className="cursor-pointer" asChild>
+                  <Link to="/user-profile" className="flex items-center gap-2.5 w-full">
+                    <BadgeCheckIcon size={16} />
+                    <span>My Profile</span>
+                  </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem className={"cursor-pointer"}>
-                  <CreditCardIcon />
-                  My Orders
+
+                <DropdownMenuItem className="cursor-pointer" asChild>
+                  <Link to="/user-profile/orders" className="flex items-center gap-2.5 w-full">
+                    <PackageIcon size={16} />
+                    <span>My Orders</span>
+                  </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem className={"cursor-pointer"}>
-                  <BellIcon />
-                  <Link to={""}>Notifications</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem className={"cursor-pointer"}>
-                  <StoreIcon />
-                  <Link to={"/seller/dashboard"}>Seller Dashboard</Link>
+
+                <DropdownMenuItem className="cursor-pointer" asChild>
+                  <Link to="/address" className="flex items-center gap-2.5 w-full">
+                    <CreditCardIcon size={16} />
+                    <span>Addresses</span>
+                  </Link>
                 </DropdownMenuItem>
               </DropdownMenuGroup>
+
+              {state.user?.isSeller && (
+                <>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuGroup>
+                    <DropdownMenuItem className="cursor-pointer" asChild>
+                      <Link to="/seller/dashboard" className="flex items-center gap-2.5 w-full">
+                        <StoreIcon size={16} />
+                        <span>Seller Dashboard</span>
+                      </Link>
+                    </DropdownMenuItem>
+
+                    <DropdownMenuItem className="cursor-pointer" asChild>
+                      <Link to="/seller/orders" className="flex items-center gap-2.5 w-full">
+                        <ClipboardListIcon size={16} />
+                        <span>Shop Orders</span>
+                      </Link>
+                    </DropdownMenuItem>
+                  </DropdownMenuGroup>
+                </>
+              )}
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 onClick={() => {
@@ -187,12 +225,12 @@ const Navbar = () => {
             </DropdownMenuContent>
           </DropdownMenu>
         ) : (
-          <Link className="text-white" to="/login">
+          <Link className="text-(--color-primary) font-bold" to="/login">
             Login
           </Link>
         )}
       </div>
-     <MobileNav />
+      <MobileNav />
     </div>
   );
 };

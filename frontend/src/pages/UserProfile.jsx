@@ -1,4 +1,4 @@
-import {  useState } from "react";
+import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import {
   SidebarProvider,
@@ -20,17 +20,21 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   User,
   ShoppingBag,
+  Heart,
   MapPin,
   Shield,
   CreditCard,
   Bell,
   MessageSquareIcon,
 } from "lucide-react";
-import ProfileContent from "../components/UserProfile/ProfileContent"
+import ProfileContent from "../components/UserProfile/ProfileContent";
+import OrdersSection from "../components/UserProfile/OrdersSection";
+import WishlistSection from "../components/Wishlist/WishlistSection";
 
 const navItems = [
   { id: "profile", label: "Profile Details", icon: User },
   { id: "orders", label: "My Orders", icon: ShoppingBag },
+  { id: "wishlist", label: "My Wishlist", icon: Heart },
   { id: "addresses", label: "Addresses", icon: MapPin },
   { id: "inbox", label: "Inbox", icon: MessageSquareIcon },
   { id: "payments", label: "Payment Methods", icon: CreditCard },
@@ -39,14 +43,15 @@ const navItems = [
 ];
 
 const UserProfileContent = () => {
-
-  const [activeSection, setActiveSection] = useState("profile");
+  const { section } = useParams();
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const activeSection = section || searchParams.get("tab") || "profile";
   const { user } = useSelector((state) => state.user);
   const { isMobile, setOpenMobile } = useSidebar();
 
-
   const handleSelectSection = (id) => {
-    setActiveSection(id);
+    navigate(id === "profile" ? "/user-profile" : `/user-profile/${id}`);
     if (isMobile) {
       setOpenMobile(false);
     }
@@ -151,22 +156,44 @@ const UserProfileContent = () => {
             <div className="max-w-3xl space-y-4">
               <h2 className="text-2xl font-bold text-slate-800">My Orders</h2>
               <p className="text-sm text-slate-500">
-                Track your recent orders, deliveries, and returns.
+                Track your recent orders, deliveries, and receipts.
               </p>
-              <div className="border rounded-xl p-8 text-center text-slate-500 bg-white shadow-xs">
-                No orders placed yet.
-              </div>
+              <OrdersSection />
             </div>
           )}
 
+          {activeSection === "wishlist" && <WishlistSection embedded />}
+
           {activeSection === "addresses" && (
             <div className="max-w-3xl space-y-4">
-              <h2 className="text-2xl font-bold text-slate-800">Addresses</h2>
-              <p className="text-sm text-slate-500">
-                Manage your saved shipping and billing addresses.
-              </p>
-              <div className="border rounded-xl p-8 text-center text-slate-500 bg-white shadow-xs">
-                No saved addresses found.
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-2xl font-bold text-slate-800">Addresses</h2>
+                  <p className="text-sm text-slate-500">
+                    Manage your saved shipping and delivery addresses.
+                  </p>
+                </div>
+                <Link
+                  to="/address/create"
+                  className="rounded-lg bg-(--color-accent) px-4 py-2 text-xs font-semibold text-white hover:opacity-90 transition"
+                >
+                  + Add Address
+                </Link>
+              </div>
+              <div className="border rounded-xl p-8 text-center bg-white shadow-xs">
+                <MapPin className="mx-auto mb-2 text-slate-300" size={36} />
+                <p className="text-sm font-semibold text-slate-700">
+                  Manage your delivery locations
+                </p>
+                <p className="mt-1 text-xs text-slate-500">
+                  Configure default addresses for quick checkout.
+                </p>
+                <Link
+                  to="/address"
+                  className="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-(--color-accent) hover:underline"
+                >
+                  View All Addresses &rarr;
+                </Link>
               </div>
             </div>
           )}

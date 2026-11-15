@@ -20,15 +20,11 @@ import {
   Sheet,
   SheetTrigger,
   SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetDescription,
 } from "./ui/sheet";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Logout, authenticateSeller } from "@/services/accountService";
 import { toast } from "./ui/toast";
-import Logo from "../assets/whitelogo1.png";
 
 const MobileNav = () => {
   const [open, setOpen] = useState(false);
@@ -75,14 +71,14 @@ const MobileNav = () => {
     try {
       const response = await authenticateSeller();
       setOpen(false);
-      navigate(`/shop/${response?.data?.data?.owner}`);
-    } catch (error) {
-      toast.add({
-        type: "error",
-        description: error.response?.data?.message || error.message,
-      });
+      if (response?.data?.hasShop && response?.data?.data) {
+        navigate("/seller/dashboard");
+      } else {
+        navigate("/seller/onboarding");
+      }
+    } catch {
       setOpen(false);
-      navigate("/signup");
+      navigate("/seller/onboarding");
     }
   };
 
@@ -273,29 +269,45 @@ const MobileNav = () => {
                     Seller Portal
                   </p>
 
-                  <Link
-                    to="/seller/dashboard"
-                    onClick={handleLinkClick}
-                    className="flex items-center justify-between px-3 py-2.5 rounded-md text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-emerald-800 transition"
-                  >
-                    <span className="flex items-center gap-3">
-                      <LayoutDashboard size={18} className="text-slate-500" />{" "}
-                      Seller Dashboard
-                    </span>
-                    <ChevronRight size={16} className="text-slate-400" />
-                  </Link>
+                  {user?.isSeller ? (
+                    <>
+                      <Link
+                        to="/seller/dashboard"
+                        onClick={handleLinkClick}
+                        className="flex items-center justify-between px-3 py-2.5 rounded-md text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-emerald-800 transition"
+                      >
+                        <span className="flex items-center gap-3">
+                          <LayoutDashboard size={18} className="text-slate-500" />{" "}
+                          Seller Dashboard
+                        </span>
+                        <ChevronRight size={16} className="text-slate-400" />
+                      </Link>
 
-                  <button
-                    type="button"
-                    onClick={handleBecomeSeller}
-                    className="w-full flex items-center justify-between px-3 py-2.5 rounded-md text-sm font-medium text-emerald-800 hover:bg-emerald-50 transition text-left"
-                  >
-                    <span className="flex items-center gap-3">
-                      <Store size={18} className="text-emerald-700" /> Become a
-                      Seller
-                    </span>
-                    <ChevronRight size={16} className="text-emerald-600" />
-                  </button>
+                      <Link
+                        to="/seller/orders"
+                        onClick={handleLinkClick}
+                        className="flex items-center justify-between px-3 py-2.5 rounded-md text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-emerald-800 transition"
+                      >
+                        <span className="flex items-center gap-3">
+                          <Package size={18} className="text-slate-500" />{" "}
+                          Shop Orders
+                        </span>
+                        <ChevronRight size={16} className="text-slate-400" />
+                      </Link>
+                    </>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={handleBecomeSeller}
+                      className="w-full flex items-center justify-between px-3 py-2.5 rounded-md text-sm font-medium text-emerald-800 hover:bg-emerald-50 transition text-left cursor-pointer"
+                    >
+                      <span className="flex items-center gap-3">
+                        <Store size={18} className="text-emerald-700" /> Become a
+                        Seller
+                      </span>
+                      <ChevronRight size={16} className="text-emerald-600" />
+                    </button>
+                  )}
                 </div>
               </>
             )}

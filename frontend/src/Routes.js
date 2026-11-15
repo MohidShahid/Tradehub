@@ -4,6 +4,9 @@ import HomePage from "./pages/HomePage";
 import AccountActivation from "./pages/AccountActivation";
 import CreateVendorAccount from "./components/CreateVendorAccount";
 import UserProfile from "./pages/UserProfile";
+import AddressPage from "./pages/AddressPage";
+import CheckoutPage from "./pages/CheckoutPage";
+import OrderSuccessPage from "./pages/OrderSuccessPage";
 
 export {
     LoginPage,
@@ -11,5 +14,8 @@ export {
     HomePage,
     AccountActivation,
     CreateVendorAccount,
-    UserProfile
+    UserProfile,
+    AddressPage,
+    CheckoutPage,
+    OrderSuccessPage,
 }
