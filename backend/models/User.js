@@ -19,11 +19,7 @@ const userSchema = Schema({
     type: String,
     default: null,
   },
-  phone: Number,
-  phoneNumber: {
-    type: String,
-    default: null,
-  },
+  phone: String,
   isEmailVerified: {
     type: String,
     default: false,

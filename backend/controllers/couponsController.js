@@ -15,7 +15,7 @@ const createCoupon = async (req, res, next) => {
       expiryDate,
     } = req.body;
 
-    const shop = await Shop.findOne({ userId: req.user._id });
+    const shop = await Shop.findOne({ owner: req.user.userId || req.user._id });
     if (!shop) {
       return next(new ErrorHandler("Doesn't have a shop on this account", 401));
     }
@@ -55,7 +55,7 @@ const createCoupon = async (req, res, next) => {
 
 const getShopCoupons = async (req, res, next) => {
   try {
-    const shop = await Shop.findOne({ userId: req.user._id });
+    const shop = await Shop.findOne({ owner: req.user.userId || req.user._id });
     if (!shop) {
       return next(new ErrorHandler("Doesn't have a shop on this account", 401));
     }
@@ -81,7 +81,7 @@ const updateCoupon = async (req, res, next) => {
       expiryDate,
     } = req.body;
 
-    const shop = await Shop.findOne({ userId: req.user._id });
+    const shop = await Shop.findOne({ owner: req.user.userId || req.user._id });
     if (!shop) {
       return next(new ErrorHandler("Doesn't have a shop on this account", 401));
     }

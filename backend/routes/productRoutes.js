@@ -11,6 +11,7 @@ const {
   createProduct,
   getShopProducts,
   getProducts,
+  getProductDetails,
   updateProduct,
   deleteProduct,
 } = require("../controllers/productController");
@@ -25,6 +26,7 @@ router.post(
 );
 router.get("/shop", isAuthenticated, authorizeSeller, getShopProducts);
 router.get("/public", getProducts);
+router.get("/:id", getProductDetails);
 router.put(
   "/update/:id",
   isAuthenticated,

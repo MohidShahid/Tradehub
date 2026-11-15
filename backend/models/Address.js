@@ -1,32 +1,60 @@
 const mongoose = require("mongoose");
-
 const { Schema } = mongoose;
 
-const addressSchema = Schema(
+const addressSchema = new Schema(
   {
     userId: {
       type: Schema.Types.ObjectId,
       ref: "User",
+      required: true,
+      index: true,
     },
-    shopId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Shop",
-      default: null,
+    fullName: {
+      type: String,
+      default: "",
+      trim: true,
     },
-    completeAddress : {
-      type : String,
-      default : null,
+    phoneNumber: {
+      type: String,
+      default: "",
+      trim: true,
     },
-    city: String,
-    country: String,
-    state: String,
-    postalCode: String,
-    isDefault : {
-      type : Boolean,
-      default : false,
-    }
+    completeAddress: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    city: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    state: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+    country: {
+      type: String,
+      default: "Pakistan",
+      trim: true,
+    },
+    postalCode: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+    addressType: {
+      type: String,
+      enum: ["Home", "Office", "Other"],
+      default: "Home",
+    },
+    isDefault: {
+      type: Boolean,
+      default: false,
+    },
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 
 const Address = mongoose.model("Address", addressSchema);

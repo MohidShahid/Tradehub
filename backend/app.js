@@ -15,6 +15,8 @@ const ErrorHandler = require('./middleware/error')
 const userRoutes = require("./routes/userRoutes")
 const sellerRoutes = require("./routes/sellerRoutes")
 const productRoutes = require("./routes/productRoutes")
+const addressRoutes = require("./routes/addressRoutes")
+const orderRoutes = require("./routes/orderRoutes")
 
 app.use(
   cors({
@@ -33,6 +35,8 @@ app.use(morgan("dev"));
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/seller", sellerRoutes);
 app.use("/api/v1/product", productRoutes);
+app.use("/api/v1/address", addressRoutes);
+app.use("/api/v1/order", orderRoutes);
 
 app.use(ErrorHandler);
 

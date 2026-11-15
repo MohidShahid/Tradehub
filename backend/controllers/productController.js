@@ -222,7 +222,16 @@ const getProducts = async (req, res, next) => {
     const page = Math.max(1, Number(req.query.page) || 1);
     const limit = Math.max(1, Number(req.query.limit) || 10);
     const skip = (page - 1) * limit;
-    const products = await Product.find({})
+
+    const filter = {};
+    if (req.query.category) {
+      filter.category = req.query.category;
+    }
+    if (req.query.excludeId && mongoose.isValidObjectId(req.query.excludeId)) {
+      filter._id = { $ne: req.query.excludeId };
+    }
+
+    const products = await Product.find(filter)
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
@@ -231,6 +240,39 @@ const getProducts = async (req, res, next) => {
     return res.json({ success: true, data: products });
   } catch (error) {
     console.error("getProducts error:", error);
+    return next(new ErrorHandler(error.message || "Internal Server Error", 500));
+  }
+};
+
+const getProductDetails = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    let product = null;
+
+      product = await Product.findById(id).populate(
+        "shopId",
+        "shopName logo rating totalReviews description"
+      );
+  
+
+    if (!product) {
+      product = await Product.findOne({ slug: id }).populate(
+        "shopId",
+        "shopName logo rating totalReviews description"
+      );
+    }
+
+    if (!product) {
+      return next(new ErrorHandler("Product not found", 404));
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: product,
+    });
+  } catch (error) {
+    console.error("getProductDetails error:", error);
     return next(new ErrorHandler(error.message || "Internal Server Error", 500));
   }
 };
@@ -435,6 +477,7 @@ module.exports = {
   createProduct,
   getShopProducts,
   getProducts,
+  getProductDetails,
   updateProduct,
   deleteProduct,
 };
